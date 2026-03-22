@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全聯盟季後賽精準推算器 (視覺優化版)</title>
+    <title>TPBL 季後賽晉級預測</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -18,16 +18,16 @@
 
 <div class="max-w-7xl mx-auto">
     <header class="mb-8 text-center">
-        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">🏀 季後賽最終戰況精準模擬器</h1>
-        <p class="text-slate-600 font-medium">已優化「特攻」與「國王」視覺辨識度 🛡️</p>
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">TPBL 季後賽晉級預測工具</h1>
+        <p class="text-slate-600 font-medium">TPBL Playoff Predictor</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
-                <span class="text-emerald-800 font-bold block mb-1">🏆 鎖定前三 (直晉)</span>
+                <span class="text-emerald-800 font-bold block mb-1">🏆 鎖定前三 (CLINCHED)</span>
                 <div id="clinchedTop3" class="text-lg font-black text-emerald-600">-</div>
             </div>
             <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
-                <span class="text-blue-800 font-bold block mb-1">🎫 鎖定前五 (保底挑戰賽)</span>
+                <span class="text-blue-800 font-bold block mb-1">🎫 鎖定前五 (至少進入挑戰賽)</span>
                 <div id="clinchedTop5" class="text-lg font-black text-blue-600">-</div>
             </div>
             <div class="p-4 rounded-xl bg-rose-50 border border-rose-200">
@@ -41,16 +41,16 @@
         <!-- 左側：剩餘賽程 -->
         <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col max-h-[800px]">
             <div class="flex justify-between items-center mb-4 shrink-0">
-                <h3 class="text-xl font-bold">預測剩餘賽事</h3>
-                <button onclick="resetAll()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-full transition">重置模擬</button>
+                <h3 class="text-xl font-bold">選擇比賽結果</h3>
+                <button onclick="resetAll()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-full transition">Reset</button>
             </div>
             <div id="matchList" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-1"></div>
         </div>
 
-        <!-- 右側：戰績榜 -->
+        <!-- 右側：戰績排行 -->
         <div class="lg:col-span-7 space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="text-xl font-bold mb-4">即時模擬排名 (依對戰紀錄判定)</h3>
+                <h3 class="text-xl font-bold mb-4">目前戰績排名</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>

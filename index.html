@@ -147,25 +147,35 @@
         const container = document.getElementById('matchList');
         container.innerHTML = matches.map(m => {
             const res = matchResults[m.id];
-            
-            // 獲取隊伍樣式設定
             const styleA = getTeamStyle(m.teamA, res === 'teamA');
             const styleB = getTeamStyle(m.teamB, res === 'teamB');
 
             return `
-                <div class="flex items-center justify-between p-3 rounded-xl border bg-white hover:border-slate-300 transition-all shadow-sm">
-                    <div class="text-[10px] text-slate-400 w-12 font-mono leading-tight">${m.date}<br/><b>${m.id}</b></div>
-                    <div class="flex-1 flex space-x-2">
-                        <button onclick="setWinner('${m.id}', 'teamA')" 
-                            style="${styleA}"
-                            class="flex-1 py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamA' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
-                            ${m.teamA}
-                        </button>
-                        <button onclick="setWinner('${m.id}', 'teamB')" 
-                            style="${styleB}"
-                            class="flex-1 py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamB' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
-                            ${m.teamB}
-                        </button>
+                <div class="p-3 rounded-xl border bg-white shadow-sm border-slate-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded">${m.id} | ${m.date}</span>
+                        <span class="text-[10px] text-slate-300 font-medium">點選預測勝隊</span>
+                    </div>
+                    <div class="flex space-x-2 relative">
+                        <!-- 左側為賽程表之「主場」 -->
+                        <div class="flex-1 flex flex-col">
+                            <button onclick="setWinner('${m.id}', 'teamA')" 
+                                style="${styleA}"
+                                class="py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamA' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
+                                ${m.teamA}
+                            </button>
+                            <span class="text-[9px] text-center text-slate-300 mt-1 uppercase tracking-tighter">Home</span>
+                        </div>
+                        <div class="flex items-center text-slate-200 font-black text-xs">VS</div>
+                        <!-- 右側為賽程表之「客場」 -->
+                        <div class="flex-1 flex flex-col">
+                            <button onclick="setWinner('${m.id}', 'teamB')" 
+                                style="${styleB}"
+                                class="py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamB' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
+                                ${m.teamB}
+                            </button>
+                            <span class="text-[9px] text-center text-slate-300 mt-1 uppercase tracking-tighter">Away</span>
+                        </div>
                     </div>
                 </div>
             `;

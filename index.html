@@ -82,13 +82,13 @@
 <script>
     // 1. 各隊官方色號與特定文字色設定
     const baseTeams = {
-        '雲豹':   { win: 19, lose: 9,  color: '#116d4e', textColor: '#ffffff' }, // 綠
-        '夢想家': { win: 17, lose: 11, color: '#8eb73d', textColor: '#ffffff' }, // 綠
-        '國王':   { win: 15, lose: 13, color: '#ffe91a', textColor: '#000000' }, // 黃
-        '特攻':   { win: 14, lose: 13, color: '#f6d233', textColor: '#182648' }, // 黃底 + 深藍字 (指定色)
-        '攻城獅': { win: 14, lose: 14, color: '#52308c', textColor: '#ffffff' }, // 紫
-        '戰神':   { win: 9,  lose: 18, color: '#e20202', textColor: '#ffffff' }, // 紅
-        '海神':   { win: 8,  lose: 20, color: '#0766e3', textColor: '#ffffff' }  // 藍
+        '雲豹':   { win: 19, lose: 9,  color: '#116d4e', textColor: '#ffffff' },
+        '夢想家': { win: 17, lose: 11, color: '#8eb73d', textColor: '#ffffff' },
+        '國王':   { win: 15, lose: 13, color: '#ffe91a', textColor: '#000000' },
+        '攻城獅': { win: 14, lose: 12, color: '#52308c', textColor: '#ffffff' }, // 修正：從 14L 改為 12L
+        '特攻':   { win: 14, lose: 13, color: '#f6d233', textColor: '#182648' }, // 已賽 27 場
+        '戰神':   { win: 9,  lose: 18, color: '#e20202', textColor: '#ffffff' }, // 已賽 27 場
+        '海神':   { win: 8,  lose: 20, color: '#0766e3', textColor: '#ffffff' }
     };
 
     const initialH2H = {

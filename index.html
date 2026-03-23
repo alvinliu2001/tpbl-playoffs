@@ -20,14 +20,12 @@
 <body class="bg-[#19191a] text-slate-200 p-4 md:p-8">
 
 <div class="max-w-7xl mx-auto">
-    <!-- 標題區塊 -->
     <header class="mb-10 text-center">
         <h1 class="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">
             <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
         </h1>
         <p class="text-slate-500 font-medium tracking-widest text-sm uppercase">TPBL Playoff Predictor</p>
         
-        <!-- 狀態卡片 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
             <div class="p-5 rounded-2xl bg-[#242426] border border-white/5 shadow-xl">
                 <span class="text-emerald-500/80 text-xs font-bold block mb-2 uppercase tracking-tighter">🏆 鎖定前三 (直晉)</span>
@@ -45,7 +43,6 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- 左側：剩餘賽程 -->
         <div class="lg:col-span-5 bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col max-h-[850px]">
             <div class="flex justify-between items-center mb-6 shrink-0">
                 <h3 class="text-xl font-bold text-white flex items-center">
@@ -56,9 +53,7 @@
             <div id="matchList" class="space-y-4 overflow-y-auto custom-scrollbar pr-2 flex-1"></div>
         </div>
 
-        <!-- 右側：戰績排行 -->
         <div class="lg:col-span-7 space-y-6">
-            <!-- 戰績表 -->
             <div class="bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-xl font-bold mb-6 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>目前戰績排名
@@ -79,7 +74,6 @@
                 </div>
             </div>
 
-            <!-- 圖表區 -->
             <div class="bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5">
                 <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest">勝場分佈視覺化</h3>
                 <div class="h-[320px]">
@@ -91,7 +85,6 @@
 </div>
 
 <script>
-    // 1. 各隊資料庫 (包含 Logo URL)
     const baseTeams = {
         '雲豹':   { win: 19, lose: 9,  color: '#116d4e', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/leopards.BGzlSG8M.webp' },
         '夢想家': { win: 17, lose: 11, color: '#8eb73d', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/dreamers.8uP5AliT.webp' },
@@ -102,7 +95,6 @@
         '海神':   { win: 8,  lose: 20, color: '#0766e3', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/aquas.CB-Rq9NB.webp' }
     };
 
-    // 2. 對戰紀錄 (H2H)
     const initialH2H = {
         '雲豹': { '夢想家': 3, '攻城獅': 2, '國王': 3, '特攻': 4, '戰神': 4, '海神': 3 },
         '夢想家': { '雲豹': 2, '攻城獅': 2, '國王': 1, '特攻': 3, '戰神': 5, '海神': 4 },
@@ -113,7 +105,6 @@
         '海神': { '雲豹': 1, '夢想家': 1, '攻城獅': 1, '國王': 1, '特攻': 2, '戰神': 2 }
     };
 
-    // 3. 剩餘賽程 (G97 - G126)
     const matches = [
         { id: 'G97', date: '3/25', teamA: '夢想家', teamB: '海神' },
         { id: 'G98', date: '3/27', teamA: '夢想家', teamB: '國王' },
@@ -156,7 +147,6 @@
         calculateAndUpdate();
     }
 
-    // 渲染賽程列表
     function renderMatches() {
         const container = document.getElementById('matchList');
         container.innerHTML = matches.map(m => {
@@ -168,11 +158,9 @@
                 <div class="p-5 rounded-2xl bg-[#1d1d1f] border border-white/5 shadow-sm">
                     <div class="flex items-center justify-between mb-4 px-1">
                         <span class="text-[11px] font-bold text-slate-200 bg-white/10 px-2.5 py-1 rounded tracking-widest">${m.id} | ${m.date}</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-black">Score Forecast</span>
+                        <span class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Score Forecast</span>
                     </div>
                     <div class="flex space-x-3 relative items-center">
-                    
-                        <!-- 客場隊伍 (原本在右邊，現在移到左邊) -->
                         <div class="flex-1 flex flex-col items-center">
                             <button onclick="setWinner('${m.id}', 'teamB')" 
                                 style="${styleB}"
@@ -182,10 +170,7 @@
                             </button>
                             <span class="text-[9px] text-slate-600 mt-2.5 font-black uppercase tracking-[0.2em]">Away</span>
                         </div>
-
-                        <div class="text-white/10 font-black text-[10px] italic pt-1">VS</div>
-
-                        <!-- 主場隊伍 (原本在左邊，現在移到右邊) -->
+                        <div class="text-white/10 font-black text-[10px] italic pt-1 uppercase">vs</div>
                         <div class="flex-1 flex flex-col items-center">
                             <button onclick="setWinner('${m.id}', 'teamA')" 
                                 style="${styleA}"
@@ -195,7 +180,6 @@
                             </button>
                             <span class="text-[9px] text-slate-600 mt-2.5 font-black uppercase tracking-[0.2em]">Home</span>
                         </div>
-                    
                     </div>
                 </div>
             `;
@@ -220,18 +204,16 @@
         calculateAndUpdate();
     }
 
-    // 核心邏輯：總勝場優先，平手看對戰 (H2H)
-    function compareTwoTeams(teamA, teamB, stats, h2h) {
-        if (stats[teamA].win !== stats[teamB].win) return stats[teamA].win - stats[teamB].win;
-        return (h2h[teamA][teamB] || 0) - (h2h[teamB][teamA] || 0);
-    }
-
+    // 關鍵：考慮到 H2H 的平手優勢判定
     function canTargetBeatOther(target, other, stats, h2h) {
         const targetMax = stats[target].maxWins;
         const otherMin = stats[other].win;
         if (targetMax > otherMin) return true;
         if (targetMax < otherMin) return false;
-        return (h2h[target][other] || 0) >= (h2h[other][target] || 0);
+        // 平手看 H2H
+        const aWinB = h2h[target][other] || 0;
+        const bWinA = h2h[other][target] || 0;
+        return aWinB >= bWinA; 
     }
 
     function calculateAndUpdate() {
@@ -255,47 +237,38 @@
         let clinchedTop3 = [], clinchedTop5 = [], eliminated = [];
 
         teams.forEach(target => {
-            let canBeBeatenBy = 0; // 有幾隊「有可能」排名在你前面
-            let definitelyBeatenBy = 0; // 有幾隊「絕對」已經排名在你前面
+            let canBeBeatenBy = 0;
+            let definitelyBeatenBy = 0;
 
             teams.forEach(other => {
                 if (target === other) return;
-
-                // --- 精確鎖定邏輯 ---
-                // 只要 other 的「最高上限」大於等於 target 的「目前保底勝場」，
-                // 考慮到多隊平手的極端狀況，我們就必須假設 target 尚未絕對贏過 other。
-                // 只有當 target.win > other.maxWins 時，target 才算絕對安全。
-                if (currentStats[other].maxWins >= currentStats[target].win) {
+                // 只要 other 「有機會」排在你前面
+                if (canTargetBeatOther(other, target, currentStats, currentH2H)) {
                     canBeBeatenBy++;
                 }
-
-                // --- 精確淘汰邏輯 ---
-                // 只有當 other 的「目前保底」嚴格大於 target 的「最高上限」時，
-                // other 才算絕對領先 target，target 追都追不上。
-                if (currentStats[other].win > currentStats[target].maxWins) {
+                // 只要 target 「連平手優勢都沒有」能贏過 other 的保底
+                if (!canTargetBeatOther(target, other, currentStats, currentH2H)) {
                     definitelyBeatenBy++;
                 }
             });
 
-            // 鎖定標籤：必須連平手狀況下的風險都排除了才顯示
             if (canBeBeatenBy < 3) clinchedTop3.push(target);
             else if (canBeBeatenBy < 5) clinchedTop5.push(target);
-
-            // 淘汰標籤：已經有 5 隊確定排在你前面，你才確定淘汰
             if (definitelyBeatenBy >= 5) eliminated.push(target);
         });
 
-        // 更新 UI 文字
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '尚未鎖定';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '尚未鎖定';
         document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '尚未產生';
 
-        const sorted = teams.sort((a, b) => compareTwoTeams(b, a, currentStats, currentH2H));
+        const sorted = teams.sort((a, b) => {
+            if (currentStats[a].win !== currentStats[b].win) return currentStats[b].win - currentStats[a].win;
+            return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
+        });
         renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated);
         renderChart(sorted, currentStats);
     }
 
-    // 渲染戰績表格
     function renderTable(sorted, stats, top3, top5, elim) {
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {
@@ -321,7 +294,6 @@
         }).join('');
     }
 
-    // 渲染 Chart.js 圖表
     function renderChart(sorted, stats) {
         const ctx = document.getElementById('standingsChart').getContext('2d');
         const data = {
@@ -331,7 +303,6 @@
                 { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 6 }
             ]
         };
-
         if (chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'bar',
@@ -344,18 +315,7 @@
                     x: { stacked: true, max: 36, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#475569', font: { size: 10 } } }, 
                     y: { stacked: true, grid: { display: false }, ticks: { color: '#cbd5e1', font: { weight: 'bold', size: 13 } } } 
                 },
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: { 
-                        backgroundColor: '#1d1d1f', 
-                        titleColor: '#fff', 
-                        bodyColor: '#cbd5e1', 
-                        cornerRadius: 12,
-                        padding: 12,
-                        borderColor: 'rgba(255,255,255,0.1)',
-                        borderWidth: 1
-                    }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }

@@ -16,25 +16,29 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 p-4 md:p-8">
+<body class="bg-[#19191a] text-slate-200 p-4 md:p-8">
 
 <div class="max-w-7xl mx-auto">
-    <header class="mb-8 text-center">
-        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">TPBL 季後賽晉級預測工具</h1>
-        <p class="text-slate-600 font-medium">TPBL Playoff Predictor</p>
+    <header class="mb-10 text-center">
+        <!-- 主標題顏色拆分 -->
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">
+            <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
+        </h1>
+        <p class="text-slate-500 font-medium tracking-widest text-sm uppercase">TPBL Playoff Predictor</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
-                <span class="text-emerald-800 font-bold block mb-1">🏆 鎖定前三 (CLINCHED)</span>
-                <div id="clinchedTop3" class="text-lg font-black text-emerald-600">-</div>
+        <!-- 狀態卡片：調整為深色質感 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div class="p-5 rounded-2xl bg-[#242426] border border-white/5 shadow-xl">
+                <span class="text-emerald-500/80 text-xs font-bold block mb-2 uppercase tracking-tighter">🏆 鎖定前三 (直晉)</span>
+                <div id="clinchedTop3" class="text-xl font-black text-emerald-400 drop-shadow-md">-</div>
             </div>
-            <div class="p-4 rounded-xl bg-blue-50 border border-blue-200">
-                <span class="text-blue-800 font-bold block mb-1">🎫 鎖定前五 (至少進入挑戰賽)</span>
-                <div id="clinchedTop5" class="text-lg font-black text-blue-600">-</div>
+            <div class="p-5 rounded-2xl bg-[#242426] border border-white/5 shadow-xl">
+                <span class="text-blue-500/80 text-xs font-bold block mb-2 uppercase tracking-tighter">🎫 鎖定前五 (保底)</span>
+                <div id="clinchedTop5" class="text-xl font-black text-blue-400 drop-shadow-md">-</div>
             </div>
-            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200">
-                <span class="text-rose-800 font-bold block mb-1">❌ 確定無緣季後賽</span>
-                <div id="eliminated" class="text-lg font-black text-rose-600">-</div>
+            <div class="p-5 rounded-2xl bg-[#242426] border border-white/5 shadow-xl">
+                <span class="text-rose-500/80 text-xs font-bold block mb-2 uppercase tracking-tighter">❌ 確定無緣季後賽</span>
+                <div id="eliminated" class="text-xl font-black text-rose-400 drop-shadow-md">-</div>
             </div>
         </div>
     </header>
@@ -151,30 +155,27 @@
             const styleB = getTeamStyle(m.teamB, res === 'teamB');
 
             return `
-                <div class="p-3 rounded-xl border bg-white shadow-sm border-slate-100">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded">${m.id} | ${m.date}</span>
-                        <span class="text-[10px] text-slate-300 font-medium">點選預測勝隊</span>
+                <div class="p-4 rounded-2xl bg-[#242426] border border-white/5 shadow-sm mb-3">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[11px] font-bold text-slate-500 bg-white/5 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span>
                     </div>
-                    <div class="flex space-x-2 relative">
-                        <!-- 左側為賽程表之「主場」 -->
+                    <div class="flex space-x-3 relative">
                         <div class="flex-1 flex flex-col">
                             <button onclick="setWinner('${m.id}', 'teamA')" 
                                 style="${styleA}"
-                                class="py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamA' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
+                                class="py-3 text-sm rounded-xl border transition-all font-bold ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.4)] scale-[1.03]' : 'bg-[#19191a] text-slate-400 border-white/10 hover:border-white/20'}">
                                 ${m.teamA}
                             </button>
-                            <span class="text-[9px] text-center text-slate-300 mt-1 uppercase tracking-tighter">Home</span>
+                            <span class="text-[9px] text-center text-slate-600 mt-2 font-bold uppercase tracking-widest">Home</span>
                         </div>
-                        <div class="flex items-center text-slate-200 font-black text-xs">VS</div>
-                        <!-- 右側為賽程表之「客場」 -->
+                        <div class="flex items-center text-white/10 font-black text-xs">VS</div>
                         <div class="flex-1 flex flex-col">
                             <button onclick="setWinner('${m.id}', 'teamB')" 
                                 style="${styleB}"
-                                class="py-2 text-sm rounded-lg border font-bold transition-all ${res === 'teamB' ? 'shadow-md scale-[1.02]' : 'bg-white text-slate-600 border-slate-200'}">
+                                class="py-3 text-sm rounded-xl border transition-all font-bold ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.4)] scale-[1.03]' : 'bg-[#19191a] text-slate-400 border-white/10 hover:border-white/20'}">
                                 ${m.teamB}
                             </button>
-                            <span class="text-[9px] text-center text-slate-300 mt-1 uppercase tracking-tighter">Away</span>
+                            <span class="text-[9px] text-center text-slate-600 mt-2 font-bold uppercase tracking-widest">Away</span>
                         </div>
                     </div>
                 </div>

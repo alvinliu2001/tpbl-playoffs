@@ -271,7 +271,24 @@
         document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
-            if (currentStats[a].win !== currentStats[b].win) return currentStats[b].win - currentStats[a].win;
+            // 計算勝率
+            const statsA = currentStats[a];
+            const statsB = currentStats[b];
+    
+            // 計算總場數
+            const totalA = statsA.win + statsA.lose;
+            const totalB = statsB.win + statsB.lose;
+
+            // 計算勝率 (勝場 / 總場數)
+            const pctA = totalA > 0 ? statsA.win / totalA : 0;
+            const pctB = totalB > 0 ? statsB.win / totalB : 0;
+
+            // 條件一：勝率不同，勝率高的排前面
+            if (Math.abs(pctA - pctB) > 0.0001) { // 避免浮點數誤差
+                return pctB - pctA;
+            }
+
+            // 條件二：勝率相同，比對戰戰績 (H2H)
             return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
         });
         renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated);

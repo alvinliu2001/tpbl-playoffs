@@ -155,30 +155,35 @@
             const styleB = getTeamStyle(m.teamB, res === 'teamB');
 
             return `
-                <div class="p-5 rounded-2xl bg-[#1d1d1f] border border-white/5 shadow-sm">
-                    <div class="flex items-center justify-between mb-4 px-1">
-                        <span class="text-[11px] font-bold text-slate-200 bg-white/10 px-2.5 py-1 rounded tracking-widest">${m.id} | ${m.date}</span>
-                        <span class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Choose Outcome</span>
+                <div class="p-3 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm">
+                    <!-- 場次與日期資訊 -->
+                    <div class="flex items-center justify-between mb-2 px-1">
+                        <span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span>
+                        <span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Choose Outcome</span>
                     </div>
-                    <div class="flex space-x-3 relative items-center">
-                        <div class="flex-1 flex flex-col items-center">
+                
+                    <!-- 對戰組合按鈕 (左客右主) -->
+                    <div class="flex space-x-2 items-center">
+                        <!-- 客場 (Away) -->
+                        <div class="flex-1">
                             <button onclick="setWinner('${m.id}', 'teamB')" 
                                 style="${styleB}"
-                                class="w-full py-4 px-2 text-sm rounded-xl border transition-all font-bold flex flex-col items-center justify-center space-y-2 ${res === 'teamB' ? 'shadow-[0_0_20px_rgba(0,0,0,0.5)] scale-[1.03]' : 'bg-[#242426] text-slate-300 border-white/10 hover:border-white/20'}">
-                                <img src="${baseTeams[m.teamB].logo}" class="w-8 h-8 object-contain">
-                                <span>${m.teamB}</span>
+                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
+                                ${m.teamB}
                             </button>
-                            <span class="text-[9px] text-slate-600 mt-2.5 font-black uppercase tracking-[0.2em]">Away</span>
+                            <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div>
                         </div>
-                        <div class="text-white/10 font-black text-[10px] italic pt-1 uppercase">vs</div>
-                        <div class="flex-1 flex flex-col items-center">
+
+                        <div class="text-white/10 font-black text-[9px] italic uppercase">vs</div>
+
+                        <!-- 主場 (Home) -->
+                        <div class="flex-1">
                             <button onclick="setWinner('${m.id}', 'teamA')" 
                                 style="${styleA}"
-                                class="w-full py-4 px-2 text-sm rounded-xl border transition-all font-bold flex flex-col items-center justify-center space-y-2 ${res === 'teamA' ? 'shadow-[0_0_20px_rgba(0,0,0,0.5)] scale-[1.03]' : 'bg-[#242426] text-slate-300 border-white/10 hover:border-white/20'}">
-                                <img src="${baseTeams[m.teamA].logo}" class="w-8 h-8 object-contain">
-                                <span>${m.teamA}</span>
+                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
+                                ${m.teamA}
                             </button>
-                            <span class="text-[9px] text-slate-600 mt-2.5 font-black uppercase tracking-[0.2em]">Home</span>
+                            <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div>
                         </div>
                     </div>
                 </div>

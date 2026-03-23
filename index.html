@@ -38,14 +38,12 @@
                 padding: 0 4px;
             }
         }
-        
-        /* 防止表格標題在手機上擠壓 */
-        .table-fixed-head { position: sticky; top: 0; z-index: 10; }
     </style>
 </head>
 <body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
+    <!-- Header 區塊 -->
     <header class="mb-8 md:mb-10 text-center">
         <h1 class="text-2xl md:text-4xl font-extrabold mb-3 tracking-tight">
             <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
@@ -82,10 +80,7 @@
                         <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase">Reset</button>
                     </div>
                 </div>
-                
-                <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0">
-                    <!-- JS 生成 -->
-                </div>
+                <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
             </div>
         </div>
 
@@ -96,16 +91,17 @@
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
                 </h3>
-                <div class="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
-                    <table class="w-full text-left border-collapse min-w-[500px] md:min-w-full">
+                <!-- 優化點：移除 min-w-[500px]，使用 table-fixed 配合寬度控制 -->
+                <div class="overflow-x-hidden"> 
+                    <table class="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr class="text-slate-500 text-[9px] md:text-[11px] uppercase tracking-widest border-b border-white/5">
-                                <th class="pb-3 pl-1 w-10">排名</th>
-                                <th class="pb-3">隊伍</th>
-                                <th class="pb-3 text-center">戰績</th>
-                                <th class="pb-3 text-center text-[#d8bf98]">最高勝場</th>
-                                <th class="pb-3 text-center">最快晉級場數</th>
-                                <th class="pb-3 text-right pr-1">狀態</th>
+                                <th class="pb-3 pl-1 w-[10%]">#</th>
+                                <th class="pb-3 w-[25%]">隊伍</th>
+                                <th class="pb-3 text-center w-[18%]">戰績</th>
+                                <th class="pb-3 text-center text-[#d8bf98] w-[15%]">最高</th>
+                                <th class="pb-3 text-center w-[15%]">晉級</th>
+                                <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
                             </tr>
                         </thead>
                         <tbody id="standingsBody"></tbody>
@@ -119,6 +115,7 @@
                     <div class="flex items-center">
                         <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析
                     </div>
+                    <!-- 優化點：移除 italic -->
                     <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
@@ -340,11 +337,11 @@
         nameLabel.innerText = `${teamName} 最短晉級路徑`;
         
         list.innerHTML = pathData.map(item => `
-            <div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all">
-                <div class="mr-3 text-[10px] font-mono text-slate-500 leading-tight">
+            <div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all text-[11px] md:text-xs">
+                <div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">
                     ${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span>
                 </div>
-                <div class="text-slate-200 text-xs font-medium">
+                <div class="text-slate-200 font-medium">
                     ${item.detail}
                 </div>
             </div>
@@ -394,7 +391,7 @@
 
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '未有隊伍';
-        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
+        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.length : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
             const statsA = currentStats[a], statsB = currentStats[b];
@@ -423,28 +420,28 @@
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {
             let status = '<span class="text-white/5">-</span>';
-            if (top3.includes(team)) status = '<span class="text-emerald-400 font-bold text-[8px] md:text-[10px] bg-emerald-500/10 border border-emerald-500/30 px-2 md:px-3 py-1 rounded-full tracking-tighter">PLAYOFFS</span>';
-            else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[8px] md:text-[10px] bg-blue-500/10 border border-blue-500/30 px-2 md:px-3 py-1 rounded-full tracking-tighter">PLAY-IN</span>';
-            else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[8px] md:text-[10px] bg-rose-500/10 border border-rose-500/30 px-2 md:px-3 py-1 rounded-full tracking-tighter uppercase">Elim</span>';
+            if (top3.includes(team)) status = '<span class="text-emerald-400 font-bold text-[7px] md:text-[10px] bg-emerald-500/10 border border-emerald-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAYOFFS</span>';
+            else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[7px] md:text-[10px] bg-blue-500/10 border border-blue-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAY-IN</span>';
+            else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[7px] md:text-[10px] bg-rose-500/10 border border-rose-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter uppercase font-black">ELIM</span>';
 
             const cDay = clinchInfo[team].days;
             const clinchDisplay = (cDay === 0) ? '達成' : (cDay === 'X' ? '⨉' : cDay);
 
             return `
                 <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
-                    <td class="py-4 md:py-5 pl-1 md:pl-2 font-mono font-bold text-slate-500 text-[10px] md:text-sm">#0${i+1}</td>
-                    <td class="py-4 md:py-5">
+                    <td class="py-4 pl-1 font-mono font-bold text-slate-500 text-[10px] md:text-sm">#0${i+1}</td>
+                    <td class="py-4">
                         <div class="flex items-center whitespace-nowrap">
-                            <div class="relative w-6 h-6 md:w-9 md:h-9 mr-2 md:mr-4 bg-[#19191a] rounded-lg p-1 border border-white/10">
+                            <div class="relative w-5 h-5 md:w-9 md:h-9 mr-1.5 md:mr-4 bg-[#19191a] rounded-md p-0.5 border border-white/10">
                                 <img src="${baseTeams[team].logo}" class="w-full h-full object-contain">
                             </div>
-                            <span class="font-bold text-slate-100 text-[13px] md:text-base tracking-tighter">${team}</span>
+                            <span class="font-bold text-slate-100 text-[12px] md:text-base tracking-tighter">${team}</span>
                         </div>
                     </td>
-                    <td class="py-4 md:py-5 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[team].win}W-${stats[team].lose}L</td>
-                    <td class="py-4 md:py-5 text-center font-black text-[#d8bf98] text-sm md:text-xl tabular-nums">${stats[team].maxWins}</td>
-                    <td class="py-4 md:py-5 text-center font-bold text-slate-400 text-xs md:text-base">${clinchDisplay}</td>
-                    <td class="py-4 md:py-5 text-right pr-1">${status}</td>
+                    <td class="py-4 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[team].win}-${stats[team].lose}</td>
+                    <td class="py-4 text-center font-black text-[#d8bf98] text-[12px] md:text-xl tabular-nums">${stats[team].maxWins}</td>
+                    <td class="py-4 text-center font-bold text-slate-400 text-[11px] md:text-base">${clinchDisplay}</td>
+                    <td class="py-4 text-right pr-1">${status}</td>
                 </tr>
             `;
         }).join('');

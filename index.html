@@ -259,21 +259,21 @@
     function renderTable(sorted, stats, top3, top5, elim) {
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {
-            let status = '<span class="text-slate-300">-</span>';
-            if (top3.includes(team)) status = '<span class="text-emerald-600 font-bold text-[10px] bg-emerald-50 px-2 py-1 rounded border border-emerald-100 uppercase">Clinched Top3</span>';
-            else if (top5.includes(team)) status = '<span class="text-blue-600 font-bold text-[10px] bg-blue-50 px-2 py-1 rounded border border-blue-100 uppercase">Clinched Top5</span>';
-            else if (elim.includes(team)) status = '<span class="text-rose-600 font-bold text-[10px] bg-rose-50 px-2 py-1 rounded border border-rose-100 uppercase">Eliminated</span>';
+            let status = '<span class="text-white/10">-</span>';
+            if (top3.includes(team)) status = '<span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full uppercase">Clinched Top3</span>';
+            else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[10px] bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded-full uppercase">Clinched Top5</span>';
+            else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[10px] bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded-full uppercase">Eliminated</span>';
 
             return `
-                <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                    <td class="p-3 font-mono font-bold text-slate-300">#0${i+1}</td>
-                    <td class="p-3 flex items-center">
-                        <span class="w-3 h-3 rounded-full mr-3 shadow-sm" style="background-color: ${baseTeams[team].color}"></span>
-                        <span class="font-bold text-slate-700">${team}</span>
+                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                    <td class="p-4 font-mono font-bold text-slate-600">#0${i+1}</td>
+                    <td class="p-4 flex items-center">
+                        <span class="w-2 h-2 rounded-full mr-3 shadow-sm" style="background-color: ${baseTeams[team].color}"></span>
+                        <span class="font-bold text-slate-200">${team}</span>
                     </td>
-                    <td class="p-3 text-center text-sm font-medium text-slate-600">${stats[team].win}W - ${stats[team].lose}L</td>
-                    <td class="p-3 text-center font-black text-slate-800">${stats[team].maxWins}</td>
-                    <td class="p-3 text-center">${status}</td>
+                    <td class="p-4 text-center text-sm font-medium text-slate-400">${stats[team].win}W - ${stats[team].lose}L</td>
+                    <td class="p-4 text-center font-black text-[#d8bf98] text-lg">${stats[team].maxWins}</td>
+                    <td class="p-4 text-right">${status}</td>
                 </tr>
             `;
         }).join('');
@@ -284,8 +284,8 @@
         const data = {
             labels: sorted,
             datasets: [
-                { label: '目前勝場', data: sorted.map(t => stats[t].win), backgroundColor: sorted.map(t => baseTeams[t].color), borderRadius: 4 },
-                { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(226, 232, 240, 0.6)', borderRadius: 4 }
+                { label: '目前勝場', data: sorted.map(t => stats[t].win), backgroundColor: sorted.map(t => baseTeams[t].color), borderRadius: 6 },
+                { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 6 }
             ]
         };
 
@@ -297,10 +297,13 @@
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { x: { stacked: true, max: 36, grid: { display: false } }, y: { stacked: true, grid: { display: false } } },
+                scales: { 
+                    x: { stacked: true, max: 36, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } }, 
+                    y: { stacked: true, grid: { display: false }, ticks: { color: '#cbd5e1', font: { weight: 'bold' } } } 
+                },
                 plugins: { 
                     legend: { display: false },
-                    tooltip: { callbacks: { label: (context) => ` ${context.dataset.label}: ${context.raw} 場` } }
+                    tooltip: { backgroundColor: '#242426', titleColor: '#fff', bodyColor: '#cbd5e1', cornerRadius: 8 }
                 }
             }
         });

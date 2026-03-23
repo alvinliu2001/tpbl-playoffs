@@ -324,7 +324,7 @@
             else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[10px] bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full tracking-tighter uppercase font-black">Eliminated</span>';
 
             const cDay = clinchDays[team];
-            const clinchDisplay = (cDay === 0) ? '已達成' : (cDay === 'X' ? '-' : cDay);
+            const clinchDisplay = (cDay === 0) ? '已達成' : (cDay === 'X' ? '⨉' : cDay);
 
             return `
                 <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">

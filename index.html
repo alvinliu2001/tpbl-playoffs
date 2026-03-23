@@ -266,9 +266,9 @@
             else if (possiblyBetterThanTarget < 5) clinchedTop5.push(target);
         });
 
-        document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '尚未鎖定';
-        document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '尚未鎖定';
-        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '尚未產生';
+        document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '未有隊伍';
+        document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '未有隊伍';
+        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
             if (currentStats[a].win !== currentStats[b].win) return currentStats[b].win - currentStats[a].win;

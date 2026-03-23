@@ -253,17 +253,37 @@
         let clinchedTop3 = [], clinchedTop5 = [], eliminated = [];
 
         teams.forEach(target => {
-            let canBeBeatenBy = 0, definitelyBeatenBy = 0;
+            let canBeBeatenBy = 0; // 有幾隊「有可能」排名在你前面
+            let definitelyBeatenBy = 0; // 有幾隊「絕對」已經排名在你前面
+
             teams.forEach(other => {
                 if (target === other) return;
-                if (canTargetBeatOther(other, target, currentStats, currentH2H)) canBeBeatenBy++;
-                if (!canTargetBeatOther(target, other, currentStats, currentH2H)) definitelyBeatenBy++;
+
+                // --- 精確鎖定邏輯 ---
+                // 只要 other 的「最高上限」大於等於 target 的「目前保底勝場」，
+                // 考慮到多隊平手的極端狀況，我們就必須假設 target 尚未絕對贏過 other。
+                // 只有當 target.win > other.maxWins 時，target 才算絕對安全。
+                if (currentStats[other].maxWins >= currentStats[target].win) {
+                    canBeBeatenBy++;
+                }
+
+                // --- 精確淘汰邏輯 ---
+                // 只有當 other 的「目前保底」嚴格大於 target 的「最高上限」時，
+                // other 才算絕對領先 target，target 追都追不上。
+                if (currentStats[other].win > currentStats[target].maxWins) {
+                    definitelyBeatenBy++;
+                }
             });
+
+            // 鎖定標籤：必須連平手狀況下的風險都排除了才顯示
             if (canBeBeatenBy < 3) clinchedTop3.push(target);
             else if (canBeBeatenBy < 5) clinchedTop5.push(target);
+
+            // 淘汰標籤：已經有 5 隊確定排在你前面，你才確定淘汰
             if (definitelyBeatenBy >= 5) eliminated.push(target);
         });
 
+        // 更新 UI 文字
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '尚未鎖定';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '尚未鎖定';
         document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '尚未產生';

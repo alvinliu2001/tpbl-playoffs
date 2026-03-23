@@ -42,6 +42,7 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- 左側：輕量化賽程表 -->
         <div class="lg:col-span-5 bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col max-h-[850px]">
             <div class="flex justify-between items-center mb-6 shrink-0 px-1">
                 <h3 class="text-xl font-bold text-white flex items-center">
@@ -52,7 +53,9 @@
             <div id="matchList" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-1"></div>
         </div>
 
+        <!-- 右側：戰績排行與路徑分析 -->
         <div class="lg:col-span-7 space-y-6">
+            <!-- 模擬戰績排名 -->
             <div class="bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-xl font-bold mb-6 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
@@ -71,6 +74,24 @@
                         </thead>
                         <tbody id="standingsBody"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- 最短晉級路徑分析 -->
+            <div id="pathAnalysisSection" class="bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 hidden">
+                <h3 class="text-xl font-bold mb-6 text-white flex items-center justify-between">
+                    <div class="flex items-center text-shadow">
+                        <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析
+                    </div>
+                    <div id="pathTeamName" class="text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-4 py-1 rounded-full italic border border-[#d8bf98]/20 tracking-wide"></div>
+                </h3>
+                <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <!-- JS 動態生成 -->
+                </div>
+                <div class="mt-4 p-4 bg-white/[0.02] rounded-xl border border-white/5">
+                    <p class="text-[10px] text-slate-500 leading-relaxed font-medium">
+                        * 註：此路徑為系統推算之「最理想狀況」，假設目標隊伍全勝且競爭對手在關鍵場次失利。若路徑中任一場賽果與預期不符，最快晉級場數將會重新計算。
+                    </p>
                 </div>
             </div>
 
@@ -217,12 +238,12 @@
         let simStats = JSON.parse(JSON.stringify(currentStats));
         let simH2H = JSON.parse(JSON.stringify(currentH2H));
         let simResults = JSON.parse(JSON.stringify(matchResults));
+        let path = [];
 
         const checkClinch = (stats, h2h) => {
             let possiblyBetterThanTarget = 0;
             Object.keys(stats).forEach(other => {
                 if (other === targetTeam) return;
-                // 只要對手還有機會在勝場或 H2H(4勝) 上超越或平手，就視為威脅
                 if (stats[other].maxWins > stats[targetTeam].win || 
                    (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) {
                     possiblyBetterThanTarget++;
@@ -231,19 +252,28 @@
             return possiblyBetterThanTarget < 3;
         };
 
-        if (checkClinch(simStats, simH2H)) return 0;
+        if (checkClinch(simStats, simH2H)) return { days: 0, path: [] };
 
+        let dayCounter = 0;
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i];
             if (simResults[m.id] !== null) continue;
 
-            let winner, loser;
+            dayCounter++;
+            let winner, loser, condition;
+
             if (m.teamA === targetTeam || m.teamB === targetTeam) {
                 winner = targetTeam;
                 loser = (m.teamA === targetTeam) ? m.teamB : m.teamA;
+                condition = `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝`;
             } else {
-                if (simStats[m.teamA].lose <= simStats[m.teamB].lose) { winner = m.teamB; loser = m.teamA; }
-                else { winner = m.teamA; loser = m.teamB; }
+                if (simStats[m.teamA].lose <= simStats[m.teamB].lose) { 
+                    winner = m.teamB; loser = m.teamA; 
+                    condition = `${m.teamA} 輸給 ${m.teamB}`;
+                } else { 
+                    winner = m.teamA; loser = m.teamB; 
+                    condition = `${m.teamB} 輸給 ${m.teamA}`;
+                }
             }
 
             simStats[winner].win++;
@@ -252,9 +282,36 @@
             simStats[winner].maxWins = 36 - simStats[winner].lose;
             simStats[loser].maxWins = 36 - simStats[loser].lose;
 
-            if (checkClinch(simStats, simH2H)) return i + 1;
+            path.push({ id: m.id, date: m.date, detail: condition });
+
+            if (checkClinch(simStats, simH2H)) return { days: dayCounter, path: path };
         }
-        return 'X';
+        return { days: 'X', path: [] };
+    }
+
+    function renderClinchPath(teamName, pathData) {
+        const section = document.getElementById('pathAnalysisSection');
+        const list = document.getElementById('pathList');
+        const nameLabel = document.getElementById('pathTeamName');
+
+        if (!teamName || pathData.length === 0) {
+            section.classList.add('hidden');
+            return;
+        }
+
+        section.classList.remove('hidden');
+        nameLabel.innerText = `${teamName} 最短晉級路徑`;
+        
+        list.innerHTML = pathData.map(item => `
+            <div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all">
+                <div class="mr-3 text-[10px] font-mono text-slate-500 leading-tight">
+                    ${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span>
+                </div>
+                <div class="text-slate-200 text-xs font-medium">
+                    ${item.detail}
+                </div>
+            </div>
+        `).join('');
     }
 
     function calculateAndUpdate() {
@@ -276,7 +333,7 @@
 
         const teams = Object.keys(currentStats);
         let clinchedTop3 = [], clinchedTop5 = [], eliminated = [];
-        let clinchDays = {};
+        let clinchInfo = {};
 
         teams.forEach(target => {
             let definitelyBetterThanTarget = 0;
@@ -285,7 +342,6 @@
             teams.forEach(other => {
                 if (target === other) return;
                 if (definitelyBeats(other, target, currentStats, currentH2H)) definitelyBetterThanTarget++;
-                
                 if (currentStats[other].maxWins > currentStats[target].win || 
                    (currentStats[other].maxWins === currentStats[target].win && (currentH2H[target][other] || 0) < 4)) {
                     possiblyBetterThanTarget++;
@@ -296,12 +352,12 @@
             if (possiblyBetterThanTarget < 3) clinchedTop3.push(target);
             else if (possiblyBetterThanTarget < 5) clinchedTop5.push(target);
 
-            clinchDays[target] = getQuickestClinch(target, currentStats, currentH2H);
+            clinchInfo[target] = getQuickestClinch(target, currentStats, currentH2H);
         });
 
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '未有隊伍';
-        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
+        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.length : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
             const statsA = currentStats[a], statsB = currentStats[b];
@@ -311,11 +367,23 @@
             return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
         });
 
-        renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated, clinchDays);
+        // 找出路徑隊伍
+        let bestPathTeam = null;
+        let minDays = 1000;
+        sorted.forEach(team => {
+            const d = clinchInfo[team].days;
+            if (d !== 'X' && d > 0 && d < minDays) {
+                minDays = d;
+                bestPathTeam = team;
+            }
+        });
+
+        renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated, clinchInfo);
         renderChart(sorted, currentStats);
+        renderClinchPath(bestPathTeam, bestPathTeam ? clinchInfo[bestPathTeam].path : []);
     }
 
-    function renderTable(sorted, stats, top3, top5, elim, clinchDays) {
+    function renderTable(sorted, stats, top3, top5, elim, clinchInfo) {
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {
             let status = '<span class="text-white/5">-</span>';
@@ -323,11 +391,11 @@
             else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[10px] bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full tracking-tighter">CLINCHED PLAY-IN</span>';
             else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[10px] bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full tracking-tighter uppercase font-black">Eliminated</span>';
 
-            const cDay = clinchDays[team];
+            const cDay = clinchInfo[team].days;
             const clinchDisplay = (cDay === 0) ? '已達成' : (cDay === 'X' ? '⨉' : cDay);
 
             return `
-                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group text-shadow">
                     <td class="py-5 pl-2 font-mono font-bold text-slate-500 group-hover:text-slate-300">#0${i+1}</td>
                     <td class="py-5 flex items-center">
                         <div class="relative w-10 h-10 mr-4 bg-[#19191a] rounded-xl p-1.5 border border-white/10 shadow-inner">

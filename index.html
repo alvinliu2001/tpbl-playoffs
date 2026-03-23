@@ -391,7 +391,7 @@
 
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '未有隊伍';
-        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.length : '未有隊伍';
+        document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
             const statsA = currentStats[a], statsB = currentStats[b];

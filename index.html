@@ -237,30 +237,47 @@
         let clinchedTop3 = [], clinchedTop5 = [], eliminated = [];
 
         teams.forEach(target => {
-            let canBeBeatenBy = 0;
-            let definitelyBeatenBy = 0;
+            let canBeBeatenBy = 0;      // 有幾隊「有可能」排名在你前面 (含平手)
+            let definitelyBeatenBy = 0; // 有幾隊「絕對」已經排名在你前面
 
             teams.forEach(other => {
                 if (target === other) return;
-                // 只要 other 「有機會」排在你前面
-                if (canTargetBeatOther(other, target, currentStats, currentH2H)) {
+
+                // --- 嚴格鎖定判定 ---
+                // 只要對手的最高勝場 >= 你的保底勝場，就代表他「有可能」威脅到你
+                // 排除 H2H，因為多隊平手時 H2H 不能保證晉級
+                if (currentStats[other].maxWins >= currentStats[target].win) {
                     canBeBeatenBy++;
                 }
-                // 只要 target 「連平手優勢都沒有」能贏過 other 的保底
-                if (!canTargetBeatOther(target, other, currentStats, currentH2H)) {
+
+                // --- 嚴格淘汰判定 ---
+                // 只有當對手的保底勝場 > 你的最高勝場時，
+                // 或是保底相同但對方有絕對 H2H 優勢且你已無剩餘對戰場次時，才算絕對領先
+                if (currentStats[other].win > currentStats[target].maxWins) {
                     definitelyBeatenBy++;
+                } else if (currentStats[other].win === currentStats[target].maxWins) {
+                    // 平手狀況下，如果對方對戰已經過半領先 (例如 4:1)，你也追不上了
+                    if ((currentH2H[other][target] || 0) > (currentH2H[target][other] || 0) && 
+                        !hasRemainingMatch(target, other)) {
+                        definitelyBeatenBy++;
+                    }
                 }
             });
 
+            // 鎖定標籤：必須連平手狀況下的風險都排除 (能威脅你的隊伍 < 5 隊)
             if (canBeBeatenBy < 3) clinchedTop3.push(target);
             else if (canBeBeatenBy < 5) clinchedTop5.push(target);
+
+            // 淘汰標籤：已經有 5 隊確定壓過你
             if (definitelyBeatenBy >= 5) eliminated.push(target);
         });
 
+    // ... 更新 UI 標籤文字 ...
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '尚未鎖定';
         document.getElementById('clinchedTop5').innerText = clinchedTop5.length ? clinchedTop5.join(', ') : '尚未鎖定';
         document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '尚未產生';
 
+    // ... 排序與渲染表格 ...
         const sorted = teams.sort((a, b) => {
             if (currentStats[a].win !== currentStats[b].win) return currentStats[b].win - currentStats[a].win;
             return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
@@ -269,6 +286,13 @@
         renderChart(sorted, currentStats);
     }
 
+// 輔助函式：檢查兩隊是否還有剩餘對戰
+function hasRemainingMatch(t1, t2) {
+    return matches.some(m => 
+        matchResults[m.id] === null && 
+        ((m.teamA === t1 && m.teamB === t2) || (m.teamA === t2 && m.teamB === t1))
+    );
+}
     function renderTable(sorted, stats, top3, top5, elim) {
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {

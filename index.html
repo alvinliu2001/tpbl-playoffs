@@ -42,7 +42,6 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- 左側：輕量化賽程表 -->
         <div class="lg:col-span-5 bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col max-h-[850px]">
             <div class="flex justify-between items-center mb-6 shrink-0 px-1">
                 <h3 class="text-xl font-bold text-white flex items-center">
@@ -53,7 +52,6 @@
             <div id="matchList" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-1"></div>
         </div>
 
-        <!-- 右側：戰績排行 -->
         <div class="lg:col-span-7 space-y-6">
             <div class="bg-[#242426] p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-xl font-bold mb-6 text-white flex items-center">
@@ -67,6 +65,7 @@
                                 <th class="pb-4">隊伍</th>
                                 <th class="pb-4 text-center">戰績</th>
                                 <th class="pb-4 text-center text-[#d8bf98]">最高勝場</th>
+                                <th class="pb-4 text-center">晉級場數</th>
                                 <th class="pb-4 text-right pr-2">狀態</th>
                             </tr>
                         </thead>
@@ -165,7 +164,7 @@
                         <div class="flex-1">
                             <button onclick="setWinner('${m.id}', 'teamB')" 
                                 style="${styleB}"
-                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
+                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/10 hover:border-white/20'}">
                                 ${m.teamB}
                             </button>
                             <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div>
@@ -174,7 +173,7 @@
                         <div class="flex-1">
                             <button onclick="setWinner('${m.id}', 'teamA')" 
                                 style="${styleA}"
-                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
+                                class="w-full py-2 px-3 text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/10 hover:border-white/20'}">
                                 ${m.teamA}
                             </button>
                             <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div>
@@ -203,21 +202,59 @@
         calculateAndUpdate();
     }
 
-    // --- 核心判定函數 (解決海神淘汰問題的關鍵) ---
     function definitelyBeats(otherTeam, targetTeam, stats, h2h) {
         const otherMin = stats[otherTeam].win;
         const targetMax = stats[targetTeam].maxWins;
-
-        // 1. 保底勝場已經嚴格大於上限
         if (otherMin > targetMax) return true;
-
-        // 2. 勝場相同時，對戰紀錄是否已經鎖定勝出 (總共6場，拿4場即鎖定)
         if (otherMin === targetMax) {
             const h2hWins = h2h[otherTeam][targetTeam] || 0;
-            // 如果對戰已經贏 4 場，平手也一定排在前面
             if (h2hWins >= 4) return true;
         }
         return false;
+    }
+
+    function getQuickestClinch(targetTeam, currentStats, currentH2H) {
+        let simStats = JSON.parse(JSON.stringify(currentStats));
+        let simH2H = JSON.parse(JSON.stringify(currentH2H));
+        let simResults = JSON.parse(JSON.stringify(matchResults));
+
+        const checkClinch = (stats, h2h) => {
+            let possiblyBetterThanTarget = 0;
+            Object.keys(stats).forEach(other => {
+                if (other === targetTeam) return;
+                // 只要對手還有機會在勝場或 H2H(4勝) 上超越或平手，就視為威脅
+                if (stats[other].maxWins > stats[targetTeam].win || 
+                   (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) {
+                    possiblyBetterThanTarget++;
+                }
+            });
+            return possiblyBetterThanTarget < 3;
+        };
+
+        if (checkClinch(simStats, simH2H)) return 0;
+
+        for (let i = 0; i < matches.length; i++) {
+            const m = matches[i];
+            if (simResults[m.id] !== null) continue;
+
+            let winner, loser;
+            if (m.teamA === targetTeam || m.teamB === targetTeam) {
+                winner = targetTeam;
+                loser = (m.teamA === targetTeam) ? m.teamB : m.teamA;
+            } else {
+                if (simStats[m.teamA].lose <= simStats[m.teamB].lose) { winner = m.teamB; loser = m.teamA; }
+                else { winner = m.teamA; loser = m.teamB; }
+            }
+
+            simStats[winner].win++;
+            simStats[loser].lose++;
+            simH2H[winner][loser] = (simH2H[winner][loser] || 0) + 1;
+            simStats[winner].maxWins = 36 - simStats[winner].lose;
+            simStats[loser].maxWins = 36 - simStats[loser].lose;
+
+            if (checkClinch(simStats, simH2H)) return i + 1;
+        }
+        return 'X';
     }
 
     function calculateAndUpdate() {
@@ -239,6 +276,7 @@
 
         const teams = Object.keys(currentStats);
         let clinchedTop3 = [], clinchedTop5 = [], eliminated = [];
+        let clinchDays = {};
 
         teams.forEach(target => {
             let definitelyBetterThanTarget = 0;
@@ -246,24 +284,19 @@
 
             teams.forEach(other => {
                 if (target === other) return;
-
-                // 判定「誰確定贏過我」
-                if (definitelyBeats(other, target, currentStats, currentH2H)) {
-                    definitelyBetterThanTarget++;
-                }
-
-                // 判定「誰有可能排在我前面」(嚴格鎖定判定)
-                if (currentStats[other].maxWins >= currentStats[target].win) {
+                if (definitelyBeats(other, target, currentStats, currentH2H)) definitelyBetterThanTarget++;
+                
+                if (currentStats[other].maxWins > currentStats[target].win || 
+                   (currentStats[other].maxWins === currentStats[target].win && (currentH2H[target][other] || 0) < 4)) {
                     possiblyBetterThanTarget++;
                 }
             });
 
-            // 淘汰：有 5 隊確定排在你前面 (你就排第 6 或第 7)
             if (definitelyBetterThanTarget >= 5) eliminated.push(target);
-            
-            // 鎖定：能威脅你的隊伍小於 3 隊/5 隊
             if (possiblyBetterThanTarget < 3) clinchedTop3.push(target);
             else if (possiblyBetterThanTarget < 5) clinchedTop5.push(target);
+
+            clinchDays[target] = getQuickestClinch(target, currentStats, currentH2H);
         });
 
         document.getElementById('clinchedTop3').innerText = clinchedTop3.length ? clinchedTop3.join(', ') : '未有隊伍';
@@ -271,37 +304,27 @@
         document.getElementById('eliminated').innerText = eliminated.length ? eliminated.join(', ') : '未有隊伍';
 
         const sorted = teams.sort((a, b) => {
-            // 計算勝率
-            const statsA = currentStats[a];
-            const statsB = currentStats[b];
-    
-            // 計算總場數
-            const totalA = statsA.win + statsA.lose;
-            const totalB = statsB.win + statsB.lose;
-
-            // 計算勝率 (勝場 / 總場數)
-            const pctA = totalA > 0 ? statsA.win / totalA : 0;
-            const pctB = totalB > 0 ? statsB.win / totalB : 0;
-
-            // 條件一：勝率不同，勝率高的排前面
-            if (Math.abs(pctA - pctB) > 0.0001) { // 避免浮點數誤差
-                return pctB - pctA;
-            }
-
-            // 條件二：勝率相同，比對戰戰績 (H2H)
+            const statsA = currentStats[a], statsB = currentStats[b];
+            const pctA = (statsA.win + statsA.lose) > 0 ? statsA.win / (statsA.win + statsA.lose) : 0;
+            const pctB = (statsB.win + statsB.lose) > 0 ? statsB.win / (statsB.win + statsB.lose) : 0;
+            if (Math.abs(pctA - pctB) > 0.0001) return pctB - pctA;
             return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
         });
-        renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated);
+
+        renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated, clinchDays);
         renderChart(sorted, currentStats);
     }
 
-    function renderTable(sorted, stats, top3, top5, elim) {
+    function renderTable(sorted, stats, top3, top5, elim, clinchDays) {
         const body = document.getElementById('standingsBody');
         body.innerHTML = sorted.map((team, i) => {
             let status = '<span class="text-white/5">-</span>';
             if (top3.includes(team)) status = '<span class="text-emerald-400 font-bold text-[10px] bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full tracking-tighter">CLINCHED PLAYOFFS</span>';
             else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[10px] bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full tracking-tighter">CLINCHED PLAY-IN</span>';
             else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[10px] bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full tracking-tighter uppercase font-black">Eliminated</span>';
+
+            const cDay = clinchDays[team];
+            const clinchDisplay = (cDay === 0) ? '已達成' : (cDay === 'X' ? '-' : cDay);
 
             return `
                 <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
@@ -314,6 +337,7 @@
                     </td>
                     <td class="py-5 text-center text-sm font-semibold text-slate-400">${stats[team].win}W - ${stats[team].lose}L</td>
                     <td class="py-5 text-center font-black text-[#d8bf98] text-xl tabular-nums">${stats[team].maxWins}</td>
+                    <td class="py-5 text-center font-bold text-slate-400 text-base">${clinchDisplay}</td>
                     <td class="py-5 text-right pr-2">${status}</td>
                 </tr>
             `;

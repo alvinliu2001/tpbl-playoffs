@@ -11,39 +11,23 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
         .match-btn { transition: all 0.2s; }
-        
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         @media (min-width: 1024px) {
-            .desktop-container {
-                height: calc(100vh - 4rem);
-                position: sticky;
-                top: 2rem;
-            }
+            .desktop-container { height: calc(100vh - 4rem); position: sticky; top: 2rem; }
         }
-
         @media (max-width: 1023px) {
-            .mobile-slider {
-                display: flex;
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-            }
+            .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
             .mobile-slider::-webkit-scrollbar { display: none; }
-            .slide-item {
-                flex: 0 0 100%;
-                scroll-snap-align: center;
-                padding: 0 4px;
-            }
+            .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; }
         }
     </style>
 </head>
 <body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
-    <!-- Header 區塊 -->
     <header class="mb-8 md:mb-10 text-center">
         <h1 class="text-2xl md:text-4xl font-extrabold mb-3 tracking-tight">
             <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
@@ -68,7 +52,6 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
         
-        <!-- 左側：賽程選擇區 -->
         <div class="lg:col-span-5 desktop-container">
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-5 shrink-0 px-1">
@@ -84,14 +67,11 @@
             </div>
         </div>
 
-        <!-- 右側：排行與分析 -->
         <div class="lg:col-span-7 space-y-6">
-            <!-- 模擬戰績排名 -->
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
                 </h3>
-                <!-- 優化點：移除 min-w-[500px]，使用 table-fixed 配合寬度控制 -->
                 <div class="overflow-x-hidden"> 
                     <table class="w-full text-left border-collapse table-fixed">
                         <thead>
@@ -101,7 +81,7 @@
                                 <th class="pb-3 text-center w-[18%]">現時戰績</th>
                                 <th class="pb-3 text-center text-[#d8bf98] w-[15%]">最高勝場</th>
                                 <th class="pb-3 text-center w-[15%]">晉級場數</th>
-                                <th class="pb-3 text-right pr-1 w-[17%]">晉級狀態</th>
+                                <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
                             </tr>
                         </thead>
                         <tbody id="standingsBody"></tbody>
@@ -109,24 +89,19 @@
                 </div>
             </div>
 
-            <!-- 最短晉級路徑分析 -->
             <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center">
                         <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析
                     </div>
-                    <!-- 優化點：移除 italic -->
                     <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
-                <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5">
-                    <p class="text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium">
-                        * 註：此路徑為系統推算之「最理想狀況」。若任一場賽果與預期不符，最快晉級場數將重新計算。
-                    </p>
+                <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium">
+                    * 註：此路徑為系統推算之「最理想狀況」。若任一場賽果與預期不符，最快晉級場數將重新計算。
                 </div>
             </div>
 
-            <!-- 圖表 -->
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5">
                 <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest text-center">各隊勝場區間視覺化</h3>
                 <div class="h-[280px] md:h-[320px]">
@@ -274,11 +249,21 @@
         let simResults = JSON.parse(JSON.stringify(matchResults));
         let path = [];
 
+        const getCutoffThreat = (stats, h2h) => {
+            const competitors = Object.keys(stats).filter(t => t !== targetTeam);
+            const sortedPotential = competitors.sort((a, b) => {
+                if (stats[b].maxWins !== stats[a].maxWins) return stats[b].maxWins - stats[a].maxWins;
+                return (h2h[b][targetTeam] || 0) - (h2h[a][targetTeam] || 0);
+            });
+            // 第三強的隊友上限即為前三名的門檻
+            const thirdBest = sortedPotential[2];
+            return { team: thirdBest, max: stats[thirdBest].maxWins };
+        };
+
         const checkClinch = (stats, h2h) => {
             let possiblyBetterThanTarget = 0;
             Object.keys(stats).forEach(other => {
                 if (other === targetTeam) return;
-                // 嚴格判定：對方最高勝場 > 我方目前勝場 OR (勝場相同且我方 H2H 沒拿滿 4 勝)
                 if (stats[other].maxWins > stats[targetTeam].win || 
                    (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) {
                     possiblyBetterThanTarget++;
@@ -302,25 +287,18 @@
                 loser = (m.teamA === targetTeam) ? m.teamB : m.teamA;
                 condition = `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝`;
             } else {
-                // --- 智慧型判斷：模擬兩種結果，看哪邊能更快晉級 ---
-                // 嘗試路徑 A：主隊勝
-                let statsA = JSON.parse(JSON.stringify(simStats));
-                statsA[m.teamA].win++; statsA[m.teamB].lose++;
-                statsA[m.teamA].maxWins = 36 - statsA[m.teamA].lose;
-                statsA[m.teamB].maxWins = 36 - statsA[m.teamB].lose;
-            
-                // 嘗試路徑 B：客隊勝
-                let statsB = JSON.parse(JSON.stringify(simStats));
-                statsB[m.teamB].win++; statsB[m.teamA].lose++;
-                statsB[m.teamB].maxWins = 36 - statsB[m.teamB].lose;
-                statsB[m.teamA].maxWins = 36 - statsB[m.teamA].lose;
+                // 核心改進：門檻最小化
+                // 模擬 Scenario A (Team A wins)
+                let sA = JSON.parse(JSON.stringify(simStats));
+                sA[m.teamA].win++; sA[m.teamB].lose++;
+                sA[m.teamA].maxWins = 36 - sA[m.teamA].lose; sA[m.teamB].maxWins = 36 - sA[m.teamB].lose;
+                
+                // 模擬 Scenario B (Team B wins)
+                let sB = JSON.parse(JSON.stringify(simStats));
+                sB[m.teamB].win++; sB[m.teamA].lose++;
+                sB[m.teamB].maxWins = 36 - sB[m.teamB].lose; sB[m.teamA].maxWins = 36 - sB[m.teamA].lose;
 
-                // 這裡簡單判定：哪種結果會讓「能威脅 target 的隊伍總上限」降得更低
-                const getThreatSum = (s) => Object.keys(s)
-                    .filter(t => t !== targetTeam)
-                    .reduce((sum, t) => sum + s[t].maxWins, 0);
-
-                if (getThreatSum(statsA) < getThreatSum(statsB)) {
+                if (getCutoffThreat(sA, simH2H).max < getCutoffThreat(sB, simH2H).max) {
                     winner = m.teamA; loser = m.teamB;
                     condition = `${m.teamB} 輸給 ${m.teamA}`;
                 } else {
@@ -341,27 +319,21 @@
         }
         return { days: 'X', path: [] };
     }
+
     function renderClinchPath(teamName, pathData) {
         const section = document.getElementById('pathAnalysisSection');
         const list = document.getElementById('pathList');
         const nameLabel = document.getElementById('pathTeamName');
 
-        if (!teamName || pathData.length === 0) {
-            section.classList.add('hidden');
-            return;
-        }
-
+        if (!teamName || pathData.length === 0) { section.classList.add('hidden'); return; }
         section.classList.remove('hidden');
         nameLabel.innerText = `${teamName} 最短晉級路徑`;
-        
         list.innerHTML = pathData.map(item => `
             <div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-all text-[11px] md:text-xs">
                 <div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">
                     ${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span>
                 </div>
-                <div class="text-slate-200 font-medium">
-                    ${item.detail}
-                </div>
+                <div class="text-slate-200 font-medium">${item.detail}</div>
             </div>
         `).join('');
     }
@@ -375,8 +347,7 @@
             if (res) {
                 const winner = res === 'teamA' ? m.teamA : m.teamB;
                 const loser = res === 'teamA' ? m.teamB : m.teamA;
-                currentStats[winner].win++;
-                currentStats[loser].lose++;
+                currentStats[winner].win++; currentStats[loser].lose++;
                 currentH2H[winner][loser] = (currentH2H[winner][loser] || 0) + 1;
             }
         });
@@ -388,9 +359,7 @@
         let clinchInfo = {};
 
         teams.forEach(target => {
-            let definitelyBetterThanTarget = 0;
-            let possiblyBetterThanTarget = 0;
-
+            let definitelyBetterThanTarget = 0, possiblyBetterThanTarget = 0;
             teams.forEach(other => {
                 if (target === other) return;
                 if (definitelyBeats(other, target, currentStats, currentH2H)) definitelyBetterThanTarget++;
@@ -399,11 +368,9 @@
                     possiblyBetterThanTarget++;
                 }
             });
-
             if (definitelyBetterThanTarget >= 5) eliminated.push(target);
             if (possiblyBetterThanTarget < 3) clinchedTop3.push(target);
             else if (possiblyBetterThanTarget < 5) clinchedTop5.push(target);
-
             clinchInfo[target] = getQuickestClinch(target, currentStats, currentH2H);
         });
 
@@ -419,14 +386,10 @@
             return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
         });
 
-        let bestPathTeam = null;
-        let minDays = 1000;
+        let bestPathTeam = null; let minDays = 1000;
         sorted.forEach(team => {
             const d = clinchInfo[team].days;
-            if (d !== 'X' && d > 0 && d < minDays) {
-                minDays = d;
-                bestPathTeam = team;
-            }
+            if (d !== 'X' && d > 0 && d < minDays) { minDays = d; bestPathTeam = team; }
         });
 
         renderTable(sorted, currentStats, clinchedTop3, clinchedTop5, eliminated, clinchInfo);

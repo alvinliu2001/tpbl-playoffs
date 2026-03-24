@@ -11,16 +11,39 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
         .match-btn { transition: all 0.2s; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
         .tooltip-content { transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
         .group:hover .tooltip-content { opacity: 1; transform: translateY(0); }
-        @media (min-width: 1024px) { .desktop-container { height: calc(100vh - 4rem); position: sticky; top: 2rem; } }
-        @media (max-width: 1023px) { .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; } .mobile-slider::-webkit-scrollbar { display: none; } .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; } }
+
+        @media (min-width: 1024px) {
+            .desktop-container {
+                height: calc(100vh - 4rem);
+                position: sticky;
+                top: 2rem;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .mobile-slider {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+            .mobile-slider::-webkit-scrollbar { display: none; }
+            .slide-item {
+                flex: 0 0 100%;
+                scroll-snap-align: center;
+                padding: 0 4px;
+            }
+        }
     </style>
 </head>
-<body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
+<body class="bg-[#19191a] text-slate-200 p-3 md:p-8 text-shadow-sm">
 
 <div class="max-w-7xl mx-auto">
     <header class="mb-8 md:mb-10 text-center">
@@ -46,6 +69,8 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+        
+        <!-- 左側：賽程選擇區 -->
         <div class="lg:col-span-5 desktop-container">
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-5 shrink-0 px-1">
@@ -54,14 +79,16 @@
                     </h3>
                     <div class="flex items-center space-x-3">
                         <span class="lg:hidden text-[10px] text-[#d8bf98]/50 font-bold uppercase tracking-widest animate-pulse">Swipe ↔</span>
-                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase">Reset</button>
+                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
                     </div>
                 </div>
                 <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
             </div>
         </div>
 
+        <!-- 右側：排行與分析 -->
         <div class="lg:col-span-7 space-y-6">
+            <!-- 模擬戰績排名 -->
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
@@ -77,12 +104,12 @@
                                     <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">包含目前已點選的預測賽果。</div>
                                 </th>
                                 <th class="pb-3 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
-                                    <span class="border-b border-dotted border-[#d8bf98]/50">最高勝場</span>
+                                    <span class="border-b border-dotted border-[#d8bf98]/50 font-bold">最高勝場</span>
                                     <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">若剩餘全勝，本季最終能達到的最高總勝場。</div>
                                 </th>
                                 <th class="pb-3 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
                                 <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
                             </tr>
@@ -92,6 +119,7 @@
                 </div>
             </div>
 
+            <!-- 最短晉級路徑分析 -->
             <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
@@ -103,7 +131,8 @@
                 </div>
             </div>
 
-            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-center">
+            <!-- 圖表 -->
+            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5">
                 <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest text-center">各隊勝場區間視覺化</h3>
                 <div class="h-[280px] md:h-[320px]"><canvas id="standingsChart"></canvas></div>
             </div>
@@ -140,6 +169,7 @@
 
     function init() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
     function applyPathMatch(id, winner) { if (winner === 'none') return; matchResults[id] = winner; renderMatches(); calculateAndUpdate(); }
+    
     function renderMatches() {
         const container = document.getElementById('matchList');
         container.innerHTML = matches.map(m => {
@@ -147,25 +177,19 @@
             return `<div class="slide-item"><div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center"><div class="flex items-center justify-between mb-4 px-1"><span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span></div><div class="flex space-x-2 items-center"><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamB')" style="${getTeamStyle(m.teamB, res === 'teamB')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamB}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div></div><div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamA')" style="${getTeamStyle(m.teamA, res === 'teamA')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamA}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div></div></div></div></div>`;
         }).join('');
     }
+
     function getTeamStyle(name, sel) { const t = baseTeams[name]; return sel ? `background-color: ${t.color}; color: ${t.textColor}; border-color: ${t.color};` : ""; }
     function selectPathTeam(name) { selectedPathTeam = name; calculateAndUpdate(); }
     function setWinner(id, winner) { matchResults[id] = (matchResults[id] === winner) ? null : winner; renderMatches(); calculateAndUpdate(); }
     function resetAll() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
 
-    // 核心邏輯：判斷某隊伍是否已經在數學上鎖定前三
     function checkClinchStatus(targetTeam, stats, h2h) {
         let risk = 0;
-        Object.keys(stats).forEach(other => {
-            if (other === targetTeam) return;
-            // 只要對手還有機會超越
-            if (stats[other].maxWins > stats[targetTeam].win || (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) risk++;
-        });
+        Object.keys(stats).forEach(o => { if (o !== targetTeam && (stats[o].maxWins > stats[targetTeam].win || (stats[o].maxWins === stats[targetTeam].win && (h2h[targetTeam][o] || 0) < 4))) risk++; });
         return risk < 3;
     }
 
-    // 真正的最短路徑模擬大腦
     function getQuickestClinch(targetTeam, currentStats, currentH2H) {
-        // 第一階段：計算「最優賽果」下的晉級天數
         const runSimulation = (stats, h2h, results) => {
             let s = JSON.parse(JSON.stringify(stats)), h = JSON.parse(JSON.stringify(h2h)), r = JSON.parse(JSON.stringify(results));
             if (checkClinchStatus(targetTeam, s, h)) return 0;
@@ -173,20 +197,17 @@
             for (let i = 0; i < matches.length; i++) {
                 const m = matches[i]; if (r[m.id] !== null) continue;
                 count++;
-                let winTeam;
-                if (m.teamA === targetTeam || m.teamB === targetTeam) { winTeam = targetTeam; } 
+                let winT;
+                if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
                 else {
-                    // 智慧選擇：哪邊贏能讓「前三門檻」降得更快
                     let sA = JSON.parse(JSON.stringify(s)), sB = JSON.parse(JSON.stringify(s));
                     sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
                     sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-                    const getT = (st) => Object.keys(st).filter(t=>t!==targetTeam).sort((a,b)=>st[b].maxWins - st[a].maxWins)[2];
-                    winTeam = (stA[getT(stA)].maxWins < stB[getT(stB)].maxWins) ? m.teamA : m.teamB;
-                    function stA(){return sA;} function stB(){return sB;} // 修正 scope
+                    const getTop = (st) => { const c = Object.keys(st).filter(t=>t!==targetTeam).sort((x,y)=>st[y].maxWins - st[x].maxWins); return st[c[2]].maxWins; };
+                    winT = (getTop(sA) < getTop(sB)) ? m.teamA : m.teamB;
                 }
-                const losTeam = (m.teamA === winTeam) ? m.teamB : m.teamA;
-                s[winTeam].win++; s[losTeam].lose++; h[winTeam][losTeam]++;
-                s[winTeam].maxWins = 36-s[winTeam].lose; s[losTeam].maxWins = 36-s[losTeam].lose;
+                let losT = (m.teamA === winT) ? m.teamB : m.teamA;
+                s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose;
                 if (checkClinchStatus(targetTeam, s, h)) return count;
             }
             return 999;
@@ -196,36 +217,21 @@
         if (minDays === 0) return { days: 0, path: [] };
         if (minDays === 999) return { days: 'X', path: [] };
 
-        // 第二階段：精確標註路徑關鍵性
         let finalPath = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
-        let simulateCount = 0;
-
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i]; if (r[m.id] !== null) continue;
-            simulateCount++;
             let winT, losT, key, irr = false;
-            
-            if (m.teamA === targetTeam || m.teamB === targetTeam) {
-                winT = targetTeam; losT = (m.teamA === targetTeam) ? m.teamB : m.teamA; key = (m.teamA === targetTeam) ? 'teamA' : 'teamB';
-            } else {
-                // 壓力測試：如果改選另一個結果，晉級天數會變長嗎？
+            if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; losT = (m.teamA === targetTeam) ? m.teamB : m.teamA; key = (m.teamA === targetTeam) ? 'teamA' : 'teamB'; } 
+            else {
                 let rA = JSON.parse(JSON.stringify(r)), rB = JSON.parse(JSON.stringify(r));
                 rA[m.id] = 'teamA'; rB[m.id] = 'teamB';
-                const daysA = runSimulation(s, h, rA);
-                const daysB = runSimulation(s, h, rB);
-                
-                if (daysA === daysB) { irr = true; winT = m.teamA; losT = m.teamB; key = 'teamA'; }
-                else if (daysA < daysB) { winT = m.teamA; losT = m.teamB; key = 'teamA'; }
+                if (runSimulation(s, h, rA) === runSimulation(s, h, rB)) { irr = true; winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
+                else if (runSimulation(s, h, rA) < runSimulation(s, h, rB)) { winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
                 else { winT = m.teamB; losT = m.teamA; key = 'teamB'; }
             }
-
             let txt = irr ? `<span class="text-slate-500 italic">不會影響</span>` : (winT === targetTeam ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`);
             finalPath.push({ id: m.id, date: m.date, detail: txt, winnerKey: irr ? 'none' : key });
-            
-            // 更新狀態繼續向下模擬
-            s[winT].win++; s[losT].lose++; h[winT][losT]++;
-            s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose;
-            r[m.id] = key;
+            s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = key;
             if (checkClinchStatus(targetTeam, s, h)) break;
         }
         return { days: minDays, path: finalPath };
@@ -238,20 +244,16 @@
         const teams = Object.keys(stats);
         let top3 = [], top5 = [], elim = [], info = {};
         teams.forEach(t => {
-            let dBetter = 0, pBetter = 0;
-            teams.forEach(o => { if (t === o) return; if (stats[o].win > stats[t].maxWins || (stats[o].win === stats[t].maxWins && (h2h[o][t] || 0) >= 4)) dBetter++; if (stats[o].maxWins > stats[t].win || (stats[o].maxWins === stats[t].win && (h2h[t][o] || 0) < 4)) pBetter++; });
-            if (dBetter >= 5) elim.push(t); if (pBetter < 3) top3.push(t); else if (pBetter < 5) top5.push(t);
+            let dBet = 0, pBet = 0;
+            teams.forEach(o => { if (t === o) return; if (stats[o].win > stats[t].maxWins || (stats[o].win === stats[t].maxWins && (h2h[o][t] || 0) >= 4)) dBet++; if (stats[o].maxWins > stats[t].win || (stats[o].maxWins === stats[t].win && (h2h[t][o] || 0) < 4)) pBet++; });
+            if (dBet >= 5) elim.push(t); if (pBet < 3) top3.push(t); else if (pBet < 5) top5.push(t);
             info[t] = getQuickestClinch(t, stats, h2h);
         });
         document.getElementById('clinchedTop3').innerText = top3.length ? top3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = top5.length ? top5.join(', ') : '未有隊伍';
         document.getElementById('eliminated').innerText = elim.length ? elim.join(', ') : '未有隊伍';
         const sorted = teams.sort((a, b) => { const sA = stats[a], sB = stats[b]; const pctA = sA.win/(sA.win+sA.lose||1), pctB = sB.win/(sB.win+sB.lose||1); if (Math.abs(pctA-pctB)>0.0001) return pctB-pctA; return (h2h[b][a]||0)-(h2h[a][b]||0); });
-        renderTable(sorted, stats, top3, top5, elim, info);
-        renderChart(sorted, stats); renderClinchPath(selectedPathTeam, info[selectedPathTeam]);
-    }
-
-    function renderTable(sorted, stats, top3, top5, elim, info) {
+        
         document.getElementById('standingsBody').innerHTML = sorted.map((t, i) => {
             let s = '<span class="text-white/5">-</span>';
             if (top3.includes(t)) s = '<span class="text-emerald-400 font-bold text-[7px] md:text-[10px] bg-emerald-500/10 border border-emerald-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAYOFFS</span>';
@@ -260,17 +262,14 @@
             const d = info[t].days, disp = (d === 0) ? '達成' : (d === 'X' ? '⨉' : d), sel = t === selectedPathTeam;
             return `<tr onclick="selectPathTeam('${t}')" class="border-b border-white/5 hover:bg-white/[0.05] transition-all cursor-pointer group ${sel ? 'bg-white/[0.03] ring-1 ring-inset ring-[#d8bf98]/30' : ''}"><td class="py-4 pl-1 font-mono font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-500'} text-[10px] md:text-sm">#0${i+1}</td><td class="py-4"><div class="flex items-center whitespace-nowrap"><div class="relative w-5 h-5 md:w-9 md:h-9 mr-1.5 md:mr-4 bg-[#19191a] rounded-md p-0.5 border border-white/10"><img src="${baseTeams[t].logo}" class="w-full h-full object-contain"></div><span class="font-bold ${sel ? 'text-white' : 'text-slate-100'} text-[12px] md:text-base tracking-tighter">${t}</span></div></td><td class="py-4 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[t].win}-${stats[t].lose}</td><td class="py-4 text-center font-black text-[#d8bf98] text-[12px] md:text-xl tabular-nums">${stats[t].maxWins}</td><td class="py-4 text-center font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-400'} text-[11px] md:text-base">${disp}</td><td class="py-4 text-right pr-1">${s}</td></tr>`;
         }).join('');
-    }
 
-    function renderClinchPath(name, data) {
         const list = document.getElementById('pathList'), nLabel = document.getElementById('pathTeamName');
-        document.getElementById('pathAnalysisSection').classList.remove('hidden'); nLabel.innerText = `${name} 最短晉級路徑`;
-        if (data.days === 0) { list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`; return; }
-        if (data.days === 'X') { list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`; return; }
-        list.innerHTML = data.path.map(item => `<div onclick="applyPathMatch('${item.id}', '${item.winnerKey}')" class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-[#d8bf98]/30 transition-all group ${item.winnerKey !== 'none' ? 'cursor-pointer' : 'cursor-default opacity-80'}"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold group-hover:text-[#d8bf98]">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div>${item.winnerKey !== 'none' ? `<div class="ml-auto text-[#d8bf98]/40 group-hover:text-[#d8bf98] text-[10px]">⊕</div>` : ''}</div>`).join('');
-    }
+        document.getElementById('pathAnalysisSection').classList.remove('hidden'); nLabel.innerText = `${selectedPathTeam} 最短晉級路徑`;
+        const pData = info[selectedPathTeam];
+        if (pData.days === 0) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`;
+        else if (pData.days === 'X') list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
+        else list.innerHTML = pData.path.map(item => `<div onclick="applyPathMatch('${item.id}', '${item.winnerKey}')" class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-[#d8bf98]/30 transition-all group ${item.winnerKey !== 'none' ? 'cursor-pointer' : 'cursor-default opacity-80'}"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold group-hover:text-[#d8bf98]">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div>${item.winnerKey !== 'none' ? `<div class="ml-auto text-[#d8bf98]/40 group-hover:text-[#d8bf98] text-[10px]">⊕</div>` : ''}</div>`).join('');
 
-    function renderChart(sorted, stats) {
         const ctx = document.getElementById('standingsChart').getContext('2d');
         const data = { labels: sorted, datasets: [{ label: '目前勝場', data: sorted.map(t => stats[t].win), backgroundColor: sorted.map(t => baseTeams[t].color), borderRadius: 6 }, { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 6 }] };
         if (chartInstance) chartInstance.destroy();

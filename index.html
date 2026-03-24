@@ -12,13 +12,16 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
         .match-btn { transition: all 0.2s; }
         
+        /* 自訂捲軸 */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
+        /* Tooltip 動畫 */
         .tooltip-content { transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
         .group:hover .tooltip-content { opacity: 1; transform: translateY(0); }
 
+        /* 電腦版佈局 */
         @media (min-width: 1024px) {
             .desktop-container {
                 height: calc(100vh - 4rem);
@@ -27,6 +30,7 @@
             }
         }
 
+        /* 手機版橫向滑動 */
         @media (max-width: 1023px) {
             .mobile-slider {
                 display: flex;
@@ -46,6 +50,7 @@
 <body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
+    <!-- 頁頭狀態 -->
     <header class="mb-8 md:mb-10 text-center">
         <h1 class="text-2xl md:text-4xl font-extrabold mb-3 tracking-tight">
             <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
@@ -93,25 +98,25 @@
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
                 </h3>
-                <div class="overflow-visible px-1"> 
+                <div class="overflow-visible px-0"> 
                     <table class="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr class="text-slate-500 text-[9px] md:text-[11px] uppercase tracking-widest border-b border-white/5">
-                                <th class="pb-3 pl-1 w-[10%]">#</th>
-                                <th class="pb-3 w-[25%]">隊伍</th>
-                                <th class="pb-3 text-center w-[18%] relative group cursor-help">
+                                <th class="pb-4 pl-4 w-[12%]">名次</th>
+                                <th class="pb-4 w-[25%]">隊伍</th>
+                                <th class="pb-4 text-center w-[18%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">現時戰績</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">包含目前已點選的預測賽果。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] font-medium leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">包含目前已點選的預測賽果。</div>
                                 </th>
-                                <th class="pb-3 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
+                                <th class="pb-4 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-[#d8bf98]/50 font-bold">最高勝場</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">若剩餘全勝，最終能達到的總勝場。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] font-medium leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">若剩餘全勝，本季最終能達到的最高總勝場。</div>
                                 </th>
-                                <th class="pb-3 text-center w-[15%] relative group cursor-help">
+                                <th class="pb-4 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] font-medium leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
-                                <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
+                                <th class="pb-4 text-right pr-4 w-[17%]">狀態</th>
                             </tr>
                         </thead>
                         <tbody id="standingsBody"></tbody>
@@ -120,14 +125,14 @@
             </div>
 
             <!-- 最短晉級路徑分析 -->
-            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
+            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden text-shadow">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
-                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
+                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
                 <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium text-center italic">
-                    * 註：此路徑為系統推論之「理想劇本」，僅供參考。
+                    * 註：此路徑為系統推算之「理想劇本」，僅供參考。
                 </div>
             </div>
 
@@ -257,7 +262,7 @@
             else if (top5.includes(t)) s = '<span class="text-blue-400 font-bold text-[7px] md:text-[10px] bg-blue-500/10 border border-blue-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAY-IN</span>';
             else if (elim.includes(t)) s = '<span class="text-rose-400 font-bold text-[7px] md:text-[10px] bg-rose-500/10 border border-rose-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter uppercase font-black">ELIM</span>';
             const d = info[t].days, disp = (d === 0) ? '達成' : (d === 'X' ? '⨉' : d), sel = t === selectedPathTeam;
-            return `<tr onclick="selectPathTeam('${t}')" class="border-b border-white/5 hover:bg-white/[0.05] transition-all cursor-pointer group ${sel ? 'bg-white/[0.03] ring-1 ring-inset ring-[#d8bf98]/30' : ''}"><td class="py-4 pl-1 font-mono font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-500'} text-[10px] md:text-sm">#0${i+1}</td><td class="py-4"><div class="flex items-center whitespace-nowrap"><div class="relative w-5 h-5 md:w-9 md:h-9 mr-1.5 md:mr-4 bg-[#19191a] rounded-md p-0.5 border border-white/10"><img src="${baseTeams[t].logo}" class="w-full h-full object-contain"></div><span class="font-bold ${sel ? 'text-white' : 'text-slate-100'} text-[12px] md:text-base tracking-tighter">${t}</span></div></td><td class="py-4 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[t].win}-${stats[t].lose}</td><td class="py-4 text-center font-black text-[#d8bf98] text-[12px] md:text-xl tabular-nums">${stats[t].maxWins}</td><td class="py-4 text-center font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-400'} text-[11px] md:text-base">${disp}</td><td class="py-4 text-right pr-1">${s}</td></tr>`;
+            return `<tr onclick="selectPathTeam('${t}')" class="border-b border-white/5 hover:bg-white/[0.05] transition-all cursor-pointer group ${sel ? 'bg-[#d8bf98]/5 ring-1 ring-inset ring-[#d8bf98]/40' : ''}"><td class="py-5 pl-4 font-mono font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-500'} text-[11px] md:text-sm">0${i+1}</td><td class="py-5"><div class="flex items-center whitespace-nowrap"><div class="relative w-6 h-6 md:w-9 md:h-9 mr-2 md:mr-4 bg-[#19191a] rounded-lg p-1 border border-white/10"><img src="${baseTeams[t].logo}" class="w-full h-full object-contain"></div><span class="font-bold ${sel ? 'text-white' : 'text-slate-100'} text-[13px] md:text-base tracking-tighter">${t}</span></div></td><td class="py-5 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[t].win}-${stats[t].lose}</td><td class="py-5 text-center font-black text-[#d8bf98] text-[13px] md:text-xl tabular-nums">${stats[t].maxWins}</td><td class="py-5 text-center font-bold ${sel ? 'text-[#d8bf98]' : 'text-slate-400'} text-[11px] md:text-base">${disp}</td><td class="py-5 text-right pr-4">${s}</td></tr>`;
         }).join('');
 
         const list = document.getElementById('pathList'), nLabel = document.getElementById('pathTeamName');

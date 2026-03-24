@@ -11,33 +11,18 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
         .match-btn { transition: all 0.2s; }
-        
-        /* 自訂捲軸 */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-        /* Tooltip 動畫 */
         .tooltip-content { transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
         .group:hover .tooltip-content { opacity: 1; transform: translateY(0); }
-
-        /* 電腦版佈局 */
-        @media (min-width: 1024px) {
-            .desktop-container { height: calc(100vh - 4rem); position: sticky; top: 2rem; }
-        }
-
-        /* 手機版橫向滑動 */
-        @media (max-width: 1023px) {
-            .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-            .mobile-slider::-webkit-scrollbar { display: none; }
-            .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; }
-        }
+        @media (min-width: 1024px) { .desktop-container { height: calc(100vh - 4rem); position: sticky; top: 2rem; } }
+        @media (max-width: 1023px) { .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; } .mobile-slider::-webkit-scrollbar { display: none; } .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; } }
     </style>
 </head>
 <body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
-    <!-- 狀態卡片區塊 -->
     <header class="mb-8 md:mb-10 text-center">
         <h1 class="text-2xl md:text-4xl font-extrabold mb-3 tracking-tight">
             <span class="text-[#ffffff]">TPBL 季後賽</span><span class="text-[#d8bf98]">晉級預測工具</span>
@@ -61,8 +46,6 @@
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
-        
-        <!-- 左側：賽程選擇區 -->
         <div class="lg:col-span-5 desktop-container">
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-5 shrink-0 px-1">
@@ -78,9 +61,7 @@
             </div>
         </div>
 
-        <!-- 右側：排行與分析 -->
         <div class="lg:col-span-7 space-y-6">
-            <!-- 模擬戰績排名 -->
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-slate-200">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center">
                     <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>模擬戰績排名
@@ -91,28 +72,18 @@
                             <tr class="text-slate-500 text-[9px] md:text-[11px] uppercase tracking-widest border-b border-white/5">
                                 <th class="pb-3 pl-1 w-[10%]">#</th>
                                 <th class="pb-3 w-[25%]">隊伍</th>
-                                
                                 <th class="pb-3 text-center w-[18%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600">現時戰績</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">
-                                        包含目前已點選的預測賽果。
-                                    </div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal font-medium">包含目前已點選的預測賽果。</div>
                                 </th>
-
                                 <th class="pb-3 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-[#d8bf98]/50">最高勝場</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">
-                                        若剩餘賽事全勝，最終能達到的總勝場。
-                                    </div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal font-medium">若剩餘賽事全勝，最終能達到的總勝場。</div>
                                 </th>
-
                                 <th class="pb-3 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">
-                                        最理想狀況下，預計還需幾場聯賽可鎖定前三。
-                                    </div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal font-medium">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
-
                                 <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
                             </tr>
                         </thead>
@@ -121,26 +92,20 @@
                 </div>
             </div>
 
-            <!-- 最短晉級路徑分析 -->
             <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
-                <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between text-shadow">
-                    <div class="flex items-center">
-                        <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析
-                    </div>
+                <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
+                    <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
                     <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
                 <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium text-center">
-                    * 註：此路徑為系統推論之「理想劇本」。點擊路徑中的場次可自動同步至預測區。
+                    * 註：此路徑為系統推論之「理想劇本」。點擊場次可自動同步至預測區。
                 </div>
             </div>
 
-            <!-- 圖表 -->
             <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5">
                 <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest text-center">各隊勝場區間視覺化</h3>
-                <div class="h-[280px] md:h-[320px]">
-                    <canvas id="standingsChart"></canvas>
-                </div>
+                <div class="h-[280px] md:h-[320px]"><canvas id="standingsChart"></canvas></div>
             </div>
         </div>
     </div>
@@ -168,54 +133,14 @@
     };
 
     const matches = [
-        { id: 'G97', date: '3/25', teamA: '夢想家', teamB: '海神' },
-        { id: 'G98', date: '3/27', teamA: '夢想家', teamB: '國王' },
-        { id: 'G99', date: '3/28', teamA: '攻城獅', teamB: '特攻' },
-        { id: 'G100', date: '3/28', teamA: '戰神', teamB: '海神' },
-        { id: 'G101', date: '3/29', teamA: '攻城獅', teamB: '雲豹' },
-        { id: 'G102', date: '3/29', teamA: '戰神', teamB: '國王' },
-        { id: 'G103', date: '4/1',  teamA: '特攻', teamB: '戰神' },
-        { id: 'G104', date: '4/4',  teamA: '特攻', teamB: '夢想家' },
-        { id: 'G105', date: '4/4',  teamA: '雲豹', teamB: '海神' },
-        { id: 'G106', date: '4/5',  teamA: '特攻', teamB: '國王' },
-        { id: 'G107', date: '4/5',  teamA: '雲豹', teamB: '戰神' },  
-        { id: 'G108', date: '4/8',  teamA: '攻城獅', teamB: '特攻' },
-        { id: 'G109', date: '4/11', teamA: '海神', teamB: '國王' },
-        { id: 'G110', date: '4/11', teamA: '攻城獅', teamB: '雲豹' },
-        { id: 'G111', date: '4/12', teamA: '海神', teamB: '戰神' },
-        { id: 'G112', date: '4/12', teamA: '攻城獅', teamB: '夢想家' },
-        { id: 'G113', date: '4/18', teamA: '夢想家', teamB: '戰神' },
-        { id: 'G114', date: '4/18', teamA: '特攻', teamB: '雲豹' },
-        { id: 'G115', date: '4/19', teamA: '夢想家', teamB: '攻城獅' },
-        { id: 'G116', date: '4/19', teamA: '特攻', teamB: '海神' },
-        { id: 'G117', date: '4/24', teamA: '國王', teamB: '夢想家' },
-        { id: 'G118', date: '4/25', teamA: '雲豹', teamB: '海神' },
-        { id: 'G119', date: '4/25', teamA: '戰神', teamB: '攻城獅' },
-        { id: 'G120', date: '4/26', teamA: '雲豹', teamB: '夢想家' },
-        { id: 'G121', date: '4/26', teamA: '戰神', teamB: '特攻' },
-        { id: 'G122', date: '4/29', teamA: '攻城獅', teamB: '國王' },
-        { id: 'G123', date: '5/2',  teamA: '攻城獅', teamB: '戰神' },
-        { id: 'G124', date: '5/2',  teamA: '國王', teamB: '雲豹' },
-        { id: 'G125', date: '5/3',  teamA: '攻城獅', teamB: '海神' },
-        { id: 'G126', date: '5/3',  teamA: '國王', teamB: '特攻' }
+        { id: 'G97', date: '3/25', teamA: '夢想家', teamB: '海神' }, { id: 'G98', date: '3/27', teamA: '夢想家', teamB: '國王' }, { id: 'G99', date: '3/28', teamA: '攻城獅', teamB: '特攻' }, { id: 'G100', date: '3/28', teamA: '戰神', teamB: '海神' }, { id: 'G101', date: '3/29', teamA: '攻城獅', teamB: '雲豹' }, { id: 'G102', date: '3/29', teamA: '戰神', teamB: '國王' }, { id: 'G103', date: '4/1',  teamA: '特攻', teamB: '戰神' }, { id: 'G104', date: '4/4',  teamA: '特攻', teamB: '夢想家' }, { id: 'G105', date: '4/4',  teamA: '雲豹', teamB: '海神' }, { id: 'G106', date: '4/5',  teamA: '特攻', teamB: '國王' }, { id: 'G107', date: '4/5',  teamA: '雲豹', teamB: '戰神' }, { id: 'G108', date: '4/8',  teamA: '攻城獅', teamB: '特攻' }, { id: 'G109', date: '4/11', teamA: '海神', teamB: '國王' }, { id: 'G110', date: '4/11', teamA: '攻城獅', teamB: '雲豹' }, { id: 'G111', date: '4/12', teamA: '海神', teamB: '戰神' }, { id: 'G112', date: '4/12', teamA: '攻城獅', teamB: '夢想家' }, { id: 'G113', date: '4/18', teamA: '夢想家', teamB: '戰神' }, { id: 'G114', date: '4/18', teamA: '特攻', teamB: '雲豹' }, { id: 'G115', date: '4/19', teamA: '夢想家', teamB: '攻城獅' }, { id: 'G116', date: '4/19', teamA: '特攻', teamB: '海神' }, { id: 'G117', date: '4/24', teamA: '國王', teamB: '夢想家' }, { id: 'G118', date: '4/25', teamA: '雲豹', teamB: '海神' }, { id: 'G119', date: '4/25', teamA: '戰神', teamB: '攻城獅' }, { id: 'G120', date: '4/26', teamA: '雲豹', teamB: '夢想家' }, { id: 'G121', date: '4/26', teamA: '戰神', teamB: '特攻' }, { id: 'G122', date: '4/29', teamA: '攻城獅', teamB: '國王' }, { id: 'G123', date: '5/2',  teamA: '攻城獅', teamB: '戰神' }, { id: 'G124', date: '5/2',  teamA: '國王', teamB: '雲豹' }, { id: 'G125', date: '5/3',  teamA: '攻城獅', teamB: '海神' }, { id: 'G126', date: '5/3',  teamA: '國王', teamB: '特攻' }
     ];
 
-    let matchResults = {};
-    let chartInstance = null;
-    let selectedPathTeam = '雲豹';
+    let matchResults = {}, chartInstance = null, selectedPathTeam = '雲豹';
 
-    function init() {
-        matches.forEach(m => matchResults[m.id] = null);
-        renderMatches();
-        calculateAndUpdate();
-    }
+    function init() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
 
-    function applyPathMatch(id, winner) {
-        if (winner === 'none') return;
-        matchResults[id] = winner;
-        renderMatches();
-        calculateAndUpdate();
-    }
+    function applyPathMatch(id, winner) { if (winner === 'none') return; matchResults[id] = winner; renderMatches(); calculateAndUpdate(); }
 
     function renderMatches() {
         const container = document.getElementById('matchList');
@@ -223,56 +148,14 @@
             const res = matchResults[m.id];
             const styleA = getTeamStyle(m.teamA, res === 'teamA');
             const styleB = getTeamStyle(m.teamB, res === 'teamB');
-
-            return `
-                <div class="slide-item">
-                    <div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center">
-                        <div class="flex items-center justify-between mb-4 px-1">
-                            <span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span>
-                            <span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span>
-                        </div>
-                        <div class="flex space-x-2 items-center">
-                            <div class="flex-1">
-                                <button onclick="setWinner('${m.id}', 'teamB')" style="${styleB}"
-                                    class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
-                                    ${m.teamB}
-                                </button>
-                                <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div>
-                            </div>
-                            <div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div>
-                            <div class="flex-1">
-                                <button onclick="setWinner('${m.id}', 'teamA')" style="${styleA}"
-                                    class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">
-                                    ${m.teamA}
-                                </button>
-                                <div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            return `<div class="slide-item"><div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center"><div class="flex items-center justify-between mb-4 px-1"><span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span></div><div class="flex space-x-2 items-center"><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamB')" style="${styleB}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamB}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div></div><div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamA')" style="${styleA}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamA}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div></div></div></div></div>`;
         }).join('');
     }
 
-    function getTeamStyle(teamName, isSelected) {
-        if (!isSelected) return "";
-        const team = baseTeams[teamName];
-        return `background-color: ${team.color}; color: ${team.textColor}; border-color: ${team.color};`;
-    }
-
+    function getTeamStyle(name, sel) { const t = baseTeams[name]; return sel ? `background-color: ${t.color}; color: ${t.textColor}; border-color: ${t.color};` : ""; }
     function selectPathTeam(name) { selectedPathTeam = name; calculateAndUpdate(); }
-
-    function setWinner(id, winner) {
-        matchResults[id] = (matchResults[id] === winner) ? null : winner;
-        renderMatches();
-        calculateAndUpdate();
-    }
-
-    function resetAll() {
-        matches.forEach(m => matchResults[m.id] = null);
-        renderMatches();
-        calculateAndUpdate();
-    }
+    function setWinner(id, winner) { matchResults[id] = (matchResults[id] === winner) ? null : winner; renderMatches(); calculateAndUpdate(); }
+    function resetAll() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
 
     function definitelyBeats(other, target, stats, h2h) {
         const oMin = stats[other].win, tMax = stats[target].maxWins;
@@ -281,118 +164,94 @@
         return false;
     }
 
+    // 核心優化：更強大的路徑模擬大腦
     function getQuickestClinch(targetTeam, currentStats, currentH2H) {
-        let simStats = JSON.parse(JSON.stringify(currentStats));
-        let simH2H = JSON.parse(JSON.stringify(currentH2H));
-        let simResults = JSON.parse(JSON.stringify(matchResults));
-        let path = [];
-
-        const getCutoff = (s) => Object.keys(s).filter(t=>t!==targetTeam).sort((a,b)=>s[b].maxWins - s[a].maxWins)[2];
-        const checkClinch = (stats, h2h) => {
-            let risk = 0;
-            Object.keys(stats).forEach(other => {
-                if (other === targetTeam) return;
-                if (stats[other].maxWins > stats[targetTeam].win || (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) risk++;
-            });
-            return risk < 3;
+        const simulateToEnd = (startIdx, stats, h2h, results) => {
+            let s = JSON.parse(JSON.stringify(stats)), h = JSON.parse(JSON.stringify(h2h)), res = JSON.parse(JSON.stringify(results));
+            const check = (st, hh) => {
+                let risk = 0;
+                Object.keys(st).forEach(o => { if (o !== targetTeam && (st[o].maxWins > st[targetTeam].win || (st[o].maxWins === st[targetTeam].win && (hh[targetTeam][o] || 0) < 4))) risk++; });
+                return risk < 3;
+            };
+            if (check(s, h)) return { days: 0, path: [] };
+            let count = 0, p = [];
+            for (let i = 0; i < matches.length; i++) {
+                const m = matches[i]; if (res[m.id] !== null) continue;
+                count++;
+                let win, los, key, irr = false;
+                if (m.teamA === targetTeam || m.teamB === targetTeam) { key = (m.teamA === targetTeam) ? 'teamA' : 'teamB'; win = targetTeam; los = (m.teamA === targetTeam) ? m.teamB : m.teamA; }
+                else {
+                    let sA = JSON.parse(JSON.stringify(s)), sB = JSON.parse(JSON.stringify(s));
+                    sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
+                    sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
+                    const getC = (st) => { const comp = Object.keys(st).filter(t=>t!==targetTeam).sort((a,b)=>st[b].maxWins - st[a].maxWins); return st[comp[2]].maxWins; };
+                    if (getC(sA) < getC(sB)) { key = 'teamA'; win = m.teamA; los = m.teamB; } else { key = 'teamB'; win = m.teamB; los = m.teamA; }
+                }
+                s[win].win++; s[los].lose++; h[win][los] = (h[win][los] || 0) + 1; s[win].maxWins = 36-s[win].lose; s[los].maxWins = 36-s[los].lose;
+                let txt = (win === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${los} 輸給 ${win}`;
+                p.push({ id: m.id, date: m.date, detail: txt, winnerKey: key });
+                if (check(s, h)) return { days: count, path: p };
+            }
+            return { days: 'X', path: [] };
         };
 
-        if (checkClinch(simStats, simH2H)) return { days: 0, path: [] };
+        const baseResult = simulateToEnd(0, currentStats, currentH2H, matchResults);
+        if (baseResult.days === 0 || baseResult.days === 'X') return baseResult;
 
-        let dayCounter = 0;
-        for (let i = 0; i < matches.length; i++) {
-            const m = matches[i];
-            if (simResults[m.id] !== null) continue;
-            dayCounter++;
-            let winner, loser, winnerKey, isIrrelevant = false;
-
-            if (m.teamA === targetTeam || m.teamB === targetTeam) {
-                winnerKey = (m.teamA === targetTeam) ? 'teamA' : 'teamB';
-                winner = targetTeam; loser = (m.teamA === targetTeam) ? m.teamB : m.teamA;
-            } else {
-                let sA = JSON.parse(JSON.stringify(simStats));
-                sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
-                let sB = JSON.parse(JSON.stringify(simStats));
-                sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-
-                const cutoffA = sA[getCutoff(sA)].maxWins;
-                const cutoffB = sB[getCutoff(sB)].maxWins;
-
-                if (cutoffA === cutoffB) { isIrrelevant = true; winnerKey = 'teamA'; winner = m.teamA; loser = m.teamB; }
-                else if (cutoffA < cutoffB) { winnerKey = 'teamA'; winner = m.teamA; loser = m.teamB; }
-                else { winnerKey = 'teamB'; winner = m.teamB; loser = m.teamA; }
+        // 為了解決不影響的翻轉問題，重新掃描路徑標註不影響
+        let finalPath = [];
+        let tempStats = JSON.parse(JSON.stringify(currentStats)), tempH2H = JSON.parse(JSON.stringify(currentH2H)), tempRes = JSON.parse(JSON.stringify(matchResults));
+        
+        for (let entry of baseResult.path) {
+            const m = matches.find(x => x.id === entry.id);
+            if (m.teamA !== targetTeam && m.teamB !== targetTeam) {
+                let resA = JSON.parse(JSON.stringify(tempRes)); resA[m.id] = 'teamA';
+                let resB = JSON.parse(JSON.stringify(tempRes)); resB[m.id] = 'teamB';
+                // 判斷兩邊未來最短路徑是否天數一致
+                if (simulateToEnd(0, tempStats, tempH2H, resA).days === simulateToEnd(0, tempStats, tempH2H, resB).days) {
+                    entry.detail = `<span class="text-slate-500 italic">不會影響</span>`;
+                    entry.winnerKey = 'none';
+                }
             }
-
-            simStats[winner].win++; simStats[loser].lose++;
-            simH2H[winner][loser] = (simH2H[winner][loser] || 0) + 1;
-            simStats[winner].maxWins = 36-simStats[winner].lose; simStats[loser].maxWins = 36-simStats[loser].lose;
-
-            let detailText = isIrrelevant ? `<span class="text-slate-500 italic">不會影響</span>` : `${loser} 輸給 ${winner}`;
-            if (winner === targetTeam) detailText = `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝`;
-            path.push({ id: m.id, date: m.date, detail: detailText, winnerKey: isIrrelevant ? 'none' : winnerKey });
-
-            if (checkClinch(simStats, simH2H)) return { days: dayCounter, path: path };
+            // 更新狀態繼續往下測
+            let w = entry.winnerKey === 'teamB' ? m.teamB : m.teamA;
+            let l = entry.winnerKey === 'teamB' ? m.teamA : m.teamB;
+            if (entry.winnerKey !== 'none') {
+                tempStats[w].win++; tempStats[l].lose++; tempH2H[w][l]++;
+                tempStats[w].maxWins = 36-tempStats[w].lose; tempStats[l].maxWins = 36-tempStats[l].lose;
+                tempRes[m.id] = entry.winnerKey;
+            }
+            finalPath.push(entry);
         }
-        return { days: 'X', path: [] };
+        return { days: baseResult.days, path: finalPath };
     }
 
     function renderClinchPath(teamName, clinchData) {
         const section = document.getElementById('pathAnalysisSection'), list = document.getElementById('pathList'), nameLabel = document.getElementById('pathTeamName');
-        section.classList.remove('hidden');
-        nameLabel.innerText = `${teamName} 最短晉級路徑`;
+        section.classList.remove('hidden'); nameLabel.innerText = `${teamName} 最短晉級路徑`;
         if (clinchData.days === 0) { list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`; return; }
         if (clinchData.days === 'X') { list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`; return; }
-        list.innerHTML = clinchData.path.map(item => `
-            <div onclick="applyPathMatch('${item.id}', '${item.winnerKey}')" class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-[#d8bf98]/30 transition-all group ${item.winnerKey !== 'none' ? 'cursor-pointer' : 'cursor-default opacity-80'}">
-                <div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold group-hover:text-[#d8bf98]">${item.id}</span></div>
-                <div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div>
-                ${item.winnerKey !== 'none' ? `<div class="ml-auto text-[#d8bf98]/40 group-hover:text-[#d8bf98] text-[10px]">⊕</div>` : ''}
-            </div>
-        `).join('');
+        list.innerHTML = clinchData.path.map(item => `<div onclick="applyPathMatch('${item.id}', '${item.winnerKey}')" class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-[#d8bf98]/30 transition-all group ${item.winnerKey !== 'none' ? 'cursor-pointer' : 'cursor-default opacity-80'}"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold group-hover:text-[#d8bf98]">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div>${item.winnerKey !== 'none' ? `<div class="ml-auto text-[#d8bf98]/40 group-hover:text-[#d8bf98] text-[10px]">⊕</div>` : ''}</div>`).join('');
     }
 
     function calculateAndUpdate() {
         let currentStats = JSON.parse(JSON.stringify(baseTeams)), currentH2H = JSON.parse(JSON.stringify(initialH2H));
-        matches.forEach(m => {
-            const res = matchResults[m.id];
-            if (res) {
-                const winner = res === 'teamA' ? m.teamA : m.teamB, loser = res === 'teamA' ? m.teamB : m.teamA;
-                currentStats[winner].win++; currentStats[loser].lose++;
-                currentH2H[winner][loser] = (currentH2H[winner][loser] || 0) + 1;
-            }
-        });
+        matches.forEach(m => { const res = matchResults[m.id]; if (res) { const win = res === 'teamA' ? m.teamA : m.teamB, los = res === 'teamA' ? m.teamB : m.teamA; currentStats[win].win++; currentStats[los].lose++; currentH2H[win][los]++; } });
         Object.keys(currentStats).forEach(t => currentStats[t].maxWins = 36 - currentStats[t].lose);
-
         const teams = Object.keys(currentStats);
         let top3 = [], top5 = [], elimList = [], clinchInfo = {};
-
         teams.forEach(target => {
             let defBetter = 0, possBetter = 0;
-            teams.forEach(other => {
-                if (target === other) return;
-                if (definitelyBeats(other, target, currentStats, currentH2H)) defBetter++;
-                if (currentStats[other].maxWins > currentStats[target].win || (currentStats[other].maxWins === currentStats[target].win && (currentH2H[target][other] || 0) < 4)) possBetter++;
-            });
-            if (defBetter >= 5) elimList.push(target);
-            if (possBetter < 3) top3.push(target); else if (possBetter < 5) top5.push(target);
+            teams.forEach(other => { if (target === other) return; if (definitelyBeats(other, target, currentStats, currentH2H)) defBetter++; if (currentStats[other].maxWins > currentStats[target].win || (currentStats[other].maxWins === currentStats[target].win && (currentH2H[target][other] || 0) < 4)) possBetter++; });
+            if (defBetter >= 5) elimList.push(target); if (possBetter < 3) top3.push(target); else if (possBetter < 5) top5.push(target);
             clinchInfo[target] = getQuickestClinch(target, currentStats, currentH2H);
         });
-
         document.getElementById('clinchedTop3').innerText = top3.length ? top3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = top5.length ? top5.join(', ') : '未有隊伍';
         document.getElementById('eliminated').innerText = elimList.length ? elimList.join(', ') : '未有隊伍';
-
-        const sorted = teams.sort((a, b) => {
-            const sA = currentStats[a], sB = currentStats[b];
-            const pctA = (sA.win + sA.lose) > 0 ? sA.win / (sA.win + sA.lose) : 0;
-            const pctB = (sB.win + sB.lose) > 0 ? sB.win / (sB.win + sB.lose) : 0;
-            if (Math.abs(pctA - pctB) > 0.0001) return pctB - pctA;
-            return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0);
-        });
-
+        const sorted = teams.sort((a, b) => { const sA = currentStats[a], sB = currentStats[b]; const pctA = (sA.win + sA.lose) > 0 ? sA.win / (sA.win + sA.lose) : 0; const pctB = (sB.win + sB.lose) > 0 ? sB.win / (sB.win + sB.lose) : 0; if (Math.abs(pctA - pctB) > 0.0001) return pctB - pctA; return (currentH2H[b][a] || 0) - (currentH2H[a][b] || 0); });
         renderTable(sorted, currentStats, top3, top5, elimList, clinchInfo);
-        renderChart(sorted, currentStats);
-        renderClinchPath(selectedPathTeam, clinchInfo[selectedPathTeam]);
+        renderChart(sorted, currentStats); renderClinchPath(selectedPathTeam, clinchInfo[selectedPathTeam]);
     }
 
     function renderTable(sorted, stats, top3, top5, elim, clinchInfo) {
@@ -402,25 +261,8 @@
             if (top3.includes(team)) status = '<span class="text-emerald-400 font-bold text-[7px] md:text-[10px] bg-emerald-500/10 border border-emerald-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAYOFFS</span>';
             else if (top5.includes(team)) status = '<span class="text-blue-400 font-bold text-[7px] md:text-[10px] bg-blue-500/10 border border-blue-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter">PLAY-IN</span>';
             else if (elim.includes(team)) status = '<span class="text-rose-400 font-bold text-[7px] md:text-[10px] bg-rose-500/10 border border-rose-500/30 px-1 md:px-3 py-1 rounded-full tracking-tighter uppercase font-black">ELIM</span>';
-
-            const cDay = clinchInfo[team].days, cDisp = (cDay === 0) ? '達成' : (cDay === 'X' ? '⨉' : cDay);
-            const isSel = team === selectedPathTeam;
-
-            return `
-                <tr onclick="selectPathTeam('${team}')" class="border-b border-white/5 hover:bg-white/[0.05] transition-all cursor-pointer group ${isSel ? 'bg-white/[0.03] ring-1 ring-inset ring-[#d8bf98]/30' : ''}">
-                    <td class="py-4 pl-1 font-mono font-bold ${isSel ? 'text-[#d8bf98]' : 'text-slate-500'} text-[10px] md:text-sm">#0${i+1}</td>
-                    <td class="py-4">
-                        <div class="flex items-center whitespace-nowrap">
-                            <div class="relative w-5 h-5 md:w-9 md:h-9 mr-1.5 md:mr-4 bg-[#19191a] rounded-md p-0.5 border border-white/10"><img src="${baseTeams[team].logo}" class="w-full h-full object-contain"></div>
-                            <span class="font-bold ${isSel ? 'text-white' : 'text-slate-100'} text-[12px] md:text-base tracking-tighter">${team}</span>
-                        </div>
-                    </td>
-                    <td class="py-4 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[team].win}-${stats[team].lose}</td>
-                    <td class="py-4 text-center font-black text-[#d8bf98] text-[12px] md:text-xl tabular-nums">${stats[team].maxWins}</td>
-                    <td class="py-4 text-center font-bold ${isSel ? 'text-[#d8bf98]' : 'text-slate-400'} text-[11px] md:text-base">${cDisp}</td>
-                    <td class="py-4 text-right pr-1">${status}</td>
-                </tr>
-            `;
+            const cDay = clinchInfo[team].days, cDisp = (cDay === 0) ? '達成' : (cDay === 'X' ? '⨉' : cDay), isSel = team === selectedPathTeam;
+            return `<tr onclick="selectPathTeam('${team}')" class="border-b border-white/5 hover:bg-white/[0.05] transition-all cursor-pointer group ${isSel ? 'bg-white/[0.03] ring-1 ring-inset ring-[#d8bf98]/30' : ''}"><td class="py-4 pl-1 font-mono font-bold ${isSel ? 'text-[#d8bf98]' : 'text-slate-500'} text-[10px] md:text-sm">#0${i+1}</td><td class="py-4"><div class="flex items-center whitespace-nowrap"><div class="relative w-5 h-5 md:w-9 md:h-9 mr-1.5 md:mr-4 bg-[#19191a] rounded-md p-0.5 border border-white/10"><img src="${baseTeams[team].logo}" class="w-full h-full object-contain"></div><span class="font-bold ${isSel ? 'text-white' : 'text-slate-100'} text-[12px] md:text-base tracking-tighter">${team}</span></div></td><td class="py-4 text-center text-[10px] md:text-sm font-semibold text-slate-400">${stats[team].win}-${stats[team].lose}</td><td class="py-4 text-center font-black text-[#d8bf98] text-[12px] md:text-xl tabular-nums">${stats[team].maxWins}</td><td class="py-4 text-center font-bold ${isSel ? 'text-[#d8bf98]' : 'text-slate-400'} text-[11px] md:text-base">${cDisp}</td><td class="py-4 text-right pr-1">${status}</td></tr>`;
         }).join('');
     }
 

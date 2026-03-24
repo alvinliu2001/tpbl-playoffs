@@ -278,6 +278,7 @@
             let possiblyBetterThanTarget = 0;
             Object.keys(stats).forEach(other => {
                 if (other === targetTeam) return;
+                // 嚴格判定：對方最高勝場 > 我方目前勝場 OR (勝場相同且我方 H2H 沒拿滿 4 勝)
                 if (stats[other].maxWins > stats[targetTeam].win || 
                    (stats[other].maxWins === stats[targetTeam].win && (h2h[targetTeam][other] || 0) < 4)) {
                     possiblyBetterThanTarget++;
@@ -301,12 +302,30 @@
                 loser = (m.teamA === targetTeam) ? m.teamB : m.teamA;
                 condition = `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝`;
             } else {
-                if (simStats[m.teamA].lose <= simStats[m.teamB].lose) { 
-                    winner = m.teamB; loser = m.teamA; 
-                    condition = `${m.teamA} 輸給 ${m.teamB}`;
-                } else { 
-                    winner = m.teamA; loser = m.teamB; 
+                // --- 智慧型判斷：模擬兩種結果，看哪邊能更快晉級 ---
+                // 嘗試路徑 A：主隊勝
+                let statsA = JSON.parse(JSON.stringify(simStats));
+                statsA[m.teamA].win++; statsA[m.teamB].lose++;
+                statsA[m.teamA].maxWins = 36 - statsA[m.teamA].lose;
+                statsA[m.teamB].maxWins = 36 - statsA[m.teamB].lose;
+            
+                // 嘗試路徑 B：客隊勝
+                let statsB = JSON.parse(JSON.stringify(simStats));
+                statsB[m.teamB].win++; statsB[m.teamA].lose++;
+                statsB[m.teamB].maxWins = 36 - statsB[m.teamB].lose;
+                statsB[m.teamA].maxWins = 36 - statsB[m.teamA].lose;
+
+                // 這裡簡單判定：哪種結果會讓「能威脅 target 的隊伍總上限」降得更低
+                const getThreatSum = (s) => Object.keys(s)
+                    .filter(t => t !== targetTeam)
+                    .reduce((sum, t) => sum + s[t].maxWins, 0);
+
+                if (getThreatSum(statsA) < getThreatSum(statsB)) {
+                    winner = m.teamA; loser = m.teamB;
                     condition = `${m.teamB} 輸給 ${m.teamA}`;
+                } else {
+                    winner = m.teamB; loser = m.teamA;
+                    condition = `${m.teamA} 輸給 ${m.teamB}`;
                 }
             }
 

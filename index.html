@@ -43,7 +43,7 @@
         }
     </style>
 </head>
-<body class="bg-[#19191a] text-slate-200 p-3 md:p-8 text-shadow-sm">
+<body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
     <header class="mb-8 md:mb-10 text-center">
@@ -79,7 +79,7 @@
                     </h3>
                     <div class="flex items-center space-x-3">
                         <span class="lg:hidden text-[10px] text-[#d8bf98]/50 font-bold uppercase tracking-widest animate-pulse">Swipe ↔</span>
-                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
+                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-1.5 rounded-full transition border border-white/10 uppercase">Reset</button>
                     </div>
                 </div>
                 <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
@@ -105,11 +105,11 @@
                                 </th>
                                 <th class="pb-3 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-[#d8bf98]/50 font-bold">最高勝場</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">若剩餘全勝，本季最終能達到的最高總勝場。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">若剩餘全勝，最終能達到的總勝場。</div>
                                 </th>
                                 <th class="pb-3 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case tracking-normal text-center">理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
                                 <th class="pb-3 text-right pr-1 w-[17%]">狀態</th>
                             </tr>
@@ -123,17 +123,16 @@
             <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
-                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20"></div>
+                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
-                <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium text-center">
-                    * 註：此路徑為系統推論之「理想劇本」。點擊場次可自動同步至預測區。
+                <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium text-center italic">
+                    * 註：此路徑為系統推論之「理想劇本」，僅供參考。
                 </div>
             </div>
 
-            <!-- 圖表 -->
-            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5">
-                <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest text-center">各隊勝場區間視覺化</h3>
+            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-center">
+                <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest">各隊勝場區間視覺化</h3>
                 <div class="h-[280px] md:h-[320px]"><canvas id="standingsChart"></canvas></div>
             </div>
         </div>
@@ -168,7 +167,6 @@
     let matchResults = {}, chartInstance = null, selectedPathTeam = '雲豹';
 
     function init() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
-    function applyPathMatch(id, winner) { if (winner === 'none') return; matchResults[id] = winner; renderMatches(); calculateAndUpdate(); }
     
     function renderMatches() {
         const container = document.getElementById('matchList');
@@ -203,8 +201,8 @@
                     let sA = JSON.parse(JSON.stringify(s)), sB = JSON.parse(JSON.stringify(s));
                     sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
                     sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-                    const getTop = (st) => { const c = Object.keys(st).filter(t=>t!==targetTeam).sort((x,y)=>st[y].maxWins - st[x].maxWins); return st[c[2]].maxWins; };
-                    winT = (getTop(sA) < getTop(sB)) ? m.teamA : m.teamB;
+                    const getCutoff = (st) => { const c = Object.keys(st).filter(t=>t!==targetTeam).sort((x,y)=>st[y].maxWins - st[x].maxWins); return st[c[2]].maxWins; };
+                    winT = (getCutoff(sA) < getCutoff(sB)) ? m.teamA : m.teamB;
                 }
                 let losT = (m.teamA === winT) ? m.teamB : m.teamA;
                 s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose;
@@ -217,24 +215,23 @@
         if (minDays === 0) return { days: 0, path: [] };
         if (minDays === 999) return { days: 'X', path: [] };
 
-        let finalPath = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
+        let path = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i]; if (r[m.id] !== null) continue;
-            let winT, losT, key, irr = false;
+            let winT, losT, key;
             if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; losT = (m.teamA === targetTeam) ? m.teamB : m.teamA; key = (m.teamA === targetTeam) ? 'teamA' : 'teamB'; } 
             else {
-                let rA = JSON.parse(JSON.stringify(r)), rB = JSON.parse(JSON.stringify(r));
-                rA[m.id] = 'teamA'; rB[m.id] = 'teamB';
-                if (runSimulation(s, h, rA) === runSimulation(s, h, rB)) { irr = true; winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
-                else if (runSimulation(s, h, rA) < runSimulation(s, h, rB)) { winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
+                let rA = JSON.parse(JSON.stringify(r)); rA[m.id] = 'teamA';
+                let rB = JSON.parse(JSON.stringify(r)); rB[m.id] = 'teamB';
+                if (runSimulation(s, h, rA) <= runSimulation(s, h, rB)) { winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
                 else { winT = m.teamB; losT = m.teamA; key = 'teamB'; }
             }
-            let txt = irr ? `<span class="text-slate-500 italic">不會影響</span>` : (winT === targetTeam ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`);
-            finalPath.push({ id: m.id, date: m.date, detail: txt, winnerKey: irr ? 'none' : key });
+            let txt = (winT === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`;
+            path.push({ id: m.id, date: m.date, detail: txt });
             s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = key;
             if (checkClinchStatus(targetTeam, s, h)) break;
         }
-        return { days: minDays, path: finalPath };
+        return { days: minDays, path: path };
     }
 
     function calculateAndUpdate() {
@@ -268,7 +265,7 @@
         const pData = info[selectedPathTeam];
         if (pData.days === 0) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`;
         else if (pData.days === 'X') list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
-        else list.innerHTML = pData.path.map(item => `<div onclick="applyPathMatch('${item.id}', '${item.winnerKey}')" class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-[#d8bf98]/30 transition-all group ${item.winnerKey !== 'none' ? 'cursor-pointer' : 'cursor-default opacity-80'}"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold group-hover:text-[#d8bf98]">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div>${item.winnerKey !== 'none' ? `<div class="ml-auto text-[#d8bf98]/40 group-hover:text-[#d8bf98] text-[10px]">⊕</div>` : ''}</div>`).join('');
+        else list.innerHTML = pData.path.map(item => `<div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 transition-all group"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div></div>`).join('');
 
         const ctx = document.getElementById('standingsChart').getContext('2d');
         const data = { labels: sorted, datasets: [{ label: '目前勝場', data: sorted.map(t => stats[t].win), backgroundColor: sorted.map(t => baseTeams[t].color), borderRadius: 6 }, { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 6 }] };

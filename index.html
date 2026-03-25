@@ -20,7 +20,7 @@
         @media (max-width: 1023px) { .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; } .mobile-slider::-webkit-scrollbar { display: none; } .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; } }
     </style>
 </head>
-<body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
+<body class="bg-[#19191a] text-slate-200 p-3 md:p-8 text-shadow-sm">
 
 <div class="max-w-7xl mx-auto">
     <header class="mb-8 md:mb-10 text-center">
@@ -74,15 +74,15 @@
                                 <th class="pb-4 w-[25%]">隊伍</th>
                                 <th class="pb-4 text-center w-[18%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">現時戰績</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal">包含目前已點選的預測賽果。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none">包含目前已點選的預測賽果。</div>
                                 </th>
                                 <th class="pb-4 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-[#d8bf98]/50 font-bold">最高勝場</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal">若剩餘全勝，本季最終能達到的最高總勝場。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none">若剩餘全勝，本季最終能達到的最高總勝場。</div>
                                 </th>
                                 <th class="pb-4 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-center">理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-center text-shadow-none">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
                                 <th class="pb-4 text-right pr-4 w-[17%]">狀態</th>
                             </tr>
@@ -158,53 +158,50 @@
     }
 
     function getQuickestClinch(targetTeam, currentStats, currentH2H) {
-        const runSimulation = (stats, h2h, results) => {
-            let s = JSON.parse(JSON.stringify(stats)), h = JSON.parse(JSON.stringify(h2h)), r = JSON.parse(JSON.stringify(results));
-            if (checkClinchStatus(targetTeam, s, h)) return 0;
-            let count = 0;
+        let s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
+        if (checkClinchStatus(targetTeam, s, h)) return { days: 0, path: [] };
+
+        const runSim = (st, hh, res) => {
+            let tempS = JSON.parse(JSON.stringify(st)), tempH = JSON.parse(JSON.stringify(hh));
+            let steps = 0;
             for (let i = 0; i < matches.length; i++) {
-                const m = matches[i]; if (r[m.id] !== null) continue;
-                count++;
-                let winT;
-                if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
+                const m = matches[i]; if (res[m.id] !== null) continue;
+                steps++;
+                let w;
+                if (m.teamA === targetTeam || m.teamB === targetTeam) { w = targetTeam; } 
                 else {
-                    let sA = JSON.parse(JSON.stringify(s)), sB = JSON.parse(JSON.stringify(s));
+                    let sA = JSON.parse(JSON.stringify(tempS)), sB = JSON.parse(JSON.stringify(tempS));
                     sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
                     sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-                    const getTop3Cutoff = (st) => { 
-                        const c = Object.keys(st).filter(t=>t!==targetTeam).sort((x,y)=>st[y].maxWins - st[x].maxWins); 
-                        return st[c[2]].maxWins; 
-                    };
-                    winT = (getTop3Cutoff(sA) < getTop3Cutoff(sB)) ? m.teamA : m.teamB;
+                    const getT = (stats) => Object.keys(stats).filter(t=>t!==targetTeam).sort((a,b)=>stats[b].maxWins - stats[a].maxWins)[2];
+                    w = (sA[getT(sA)].maxWins < sB[getT(sB)].maxWins) ? m.teamA : m.teamB;
                 }
-                let losT = (m.teamA === winT) ? m.teamB : m.teamA;
-                s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose;
-                if (checkClinchStatus(targetTeam, s, h)) return count;
+                let l = (m.teamA === w) ? m.teamB : m.teamA;
+                tempS[w].win++; tempS[l].lose++; tempH[w][l]++;
+                tempS[w].maxWins = 36-tempS[w].lose; tempS[l].maxWins = 36-tempS[l].lose;
+                if (checkClinchStatus(targetTeam, tempS, tempH)) return steps;
             }
             return 999;
         };
 
-        const minDays = runSimulation(currentStats, currentH2H, matchResults);
-        if (minDays === 0) return { days: 0, path: [] };
-        if (minDays >= 999) return { days: 'X', path: [] };
-
-        let path = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
+        let path = [];
+        let hasReached = false;
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i]; if (r[m.id] !== null) continue;
-            let winT, losT, key;
-            if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; losT = (m.teamA === targetTeam) ? m.teamB : m.teamA; key = (m.teamA === targetTeam) ? 'teamA' : 'teamB'; } 
+            let winT, losT;
+            if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
             else {
-                let rA = JSON.parse(JSON.stringify(r)); rA[m.id] = 'teamA';
-                let rB = JSON.parse(JSON.stringify(r)); rB[m.id] = 'teamB';
-                if (runSimulation(s, h, rA) <= runSimulation(s, h, rB)) { winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
-                else { winT = m.teamB; losT = m.teamA; key = 'teamB'; }
+                let rA = JSON.parse(JSON.stringify(r)), rB = JSON.parse(JSON.stringify(r));
+                rA[m.id] = 'teamA'; rB[m.id] = 'teamB';
+                winT = (runSim(s, h, rA) <= runSim(s, h, rB)) ? m.teamA : m.teamB;
             }
+            losT = (m.teamA === winT) ? m.teamB : m.teamA;
             let txt = (winT === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`;
             path.push({ id: m.id, date: m.date, detail: txt });
             s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = 'simulated';
-            if (checkClinchStatus(targetTeam, s, h)) break;
+            if (checkClinchStatus(targetTeam, s, h)) { hasReached = true; break; }
         }
-        return { days: path.length, path: path };
+        return hasReached ? { days: path.length, path: path } : { days: 'X', path: [] };
     }
 
     function calculateAndUpdate() {

@@ -82,7 +82,7 @@
                                 </th>
                                 <th class="pb-4 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-center">理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
                                 <th class="pb-4 text-right pr-4 w-[17%]">狀態</th>
                             </tr>
@@ -95,7 +95,7 @@
             <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
-                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-4 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
+                    <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
                 </h3>
                 <div id="pathList" class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-sm"></div>
                 <div class="mt-4 p-3 md:p-4 bg-white/[0.02] rounded-xl border border-white/5 text-[9px] md:text-[10px] text-slate-500 leading-relaxed font-medium text-center italic">
@@ -128,7 +128,7 @@
         '攻城獅': { '雲豹': 2, '夢想家': 2, '國王': 3, '特攻': 2, '戰神': 1, '海神': 4 },
         '國王': { '雲豹': 2, '夢想家': 3, '攻城獅': 2, '特攻': 1, '戰神': 3, '海神': 4 },
         '特攻': { '雲豹': 1, '夢想家': 2, '攻城獅': 2, '國王': 3, '戰神': 3, '海神': 3 },
-        '戰神': { '雲豹': 1, '夢想家': 0, '攻城獅': 3, '國過': 2, '特攻': 1, '海神': 2 },
+        '戰神': { '雲豹': 1, '夢想家': 0, '攻城獅': 3, '國王': 2, '特攻': 1, '海神': 2 },
         '海神': { '雲豹': 1, '夢想家': 1, '攻城獅': 1, '國王': 1, '特攻': 2, '戰神': 2 }
     };
 
@@ -157,51 +157,54 @@
         return risk < 3;
     }
 
-    // 整合計算：確保天數與路徑長度永遠一致
     function getQuickestClinch(targetTeam, currentStats, currentH2H) {
-        let s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
-        if (checkClinchStatus(targetTeam, s, h)) return { days: 0, path: [] };
-
-        const runSim = (st, hh, res) => {
-            let tempS = JSON.parse(JSON.stringify(st)), tempH = JSON.parse(JSON.stringify(hh));
-            let steps = 0;
+        const runSimulation = (stats, h2h, results) => {
+            let s = JSON.parse(JSON.stringify(stats)), h = JSON.parse(JSON.stringify(h2h)), r = JSON.parse(JSON.stringify(results));
+            if (checkClinchStatus(targetTeam, s, h)) return 0;
+            let count = 0;
             for (let i = 0; i < matches.length; i++) {
-                const m = matches[i]; if (res[m.id] !== null) continue;
-                steps++;
-                let w;
-                if (m.teamA === targetTeam || m.teamB === targetTeam) { w = targetTeam; } 
+                const m = matches[i]; if (r[m.id] !== null) continue;
+                count++;
+                let winT;
+                if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
                 else {
-                    let sA = JSON.parse(JSON.stringify(tempS)), sB = JSON.parse(JSON.stringify(tempS));
+                    let sA = JSON.parse(JSON.stringify(s)), sB = JSON.parse(JSON.stringify(s));
                     sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
                     sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-                    const getT = (stats) => Object.keys(stats).filter(t=>t!==targetTeam).sort((a,b)=>stats[b].maxWins - stats[a].maxWins)[2];
-                    w = (sA[getT(sA)].maxWins < sB[getT(sB)].maxWins) ? m.teamA : m.teamB;
+                    const getTop3Cutoff = (st) => { 
+                        const c = Object.keys(st).filter(t=>t!==targetTeam).sort((x,y)=>st[y].maxWins - st[x].maxWins); 
+                        return st[c[2]].maxWins; 
+                    };
+                    winT = (getTop3Cutoff(sA) < getTop3Cutoff(sB)) ? m.teamA : m.teamB;
                 }
-                let l = (m.teamA === w) ? m.teamB : m.teamA;
-                tempS[w].win++; tempS[l].lose++; tempH[w][l]++;
-                tempS[w].maxWins = 36-tempS[w].lose; tempS[l].maxWins = 36-tempS[l].lose;
-                if (checkClinchStatus(targetTeam, tempS, tempH)) return steps;
+                let losT = (m.teamA === winT) ? m.teamB : m.teamA;
+                s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose;
+                if (checkClinchStatus(targetTeam, s, h)) return count;
             }
             return 999;
         };
 
-        let path = [];
+        const minDays = runSimulation(currentStats, currentH2H, matchResults);
+        if (minDays === 0) return { days: 0, path: [] };
+        if (minDays >= 999) return { days: 'X', path: [] };
+
+        let path = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i]; if (r[m.id] !== null) continue;
-            let winT, losT;
-            if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
+            let winT, losT, key;
+            if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; losT = (m.teamA === targetTeam) ? m.teamB : m.teamA; key = (m.teamA === targetTeam) ? 'teamA' : 'teamB'; } 
             else {
-                let rA = JSON.parse(JSON.stringify(r)), rB = JSON.parse(JSON.stringify(r));
-                rA[m.id] = 'teamA'; rB[m.id] = 'teamB';
-                winT = (runSim(s, h, rA) <= runSim(s, h, rB)) ? m.teamA : m.teamB;
+                let rA = JSON.parse(JSON.stringify(r)); rA[m.id] = 'teamA';
+                let rB = JSON.parse(JSON.stringify(r)); rB[m.id] = 'teamB';
+                if (runSimulation(s, h, rA) <= runSimulation(s, h, rB)) { winT = m.teamA; losT = m.teamB; key = 'teamA'; } 
+                else { winT = m.teamB; losT = m.teamA; key = 'teamB'; }
             }
-            losT = (m.teamA === winT) ? m.teamB : m.teamA;
             let txt = (winT === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`;
             path.push({ id: m.id, date: m.date, detail: txt });
-            s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = 'fixed';
+            s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = 'simulated';
             if (checkClinchStatus(targetTeam, s, h)) break;
         }
-        return path.length > 0 ? { days: path.length, path: path } : { days: 'X', path: [] };
+        return { days: path.length, path: path };
     }
 
     function calculateAndUpdate() {
@@ -234,7 +237,7 @@
         document.getElementById('pathAnalysisSection').classList.remove('hidden'); nLabel.innerText = `${selectedPathTeam} 最短晉級路徑`;
         const pData = info[selectedPathTeam];
         if (pData.days === 0) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`;
-        else if (pData.days === 'X' || pData.days === 999) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
+        else if (pData.days === 'X') list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
         else list.innerHTML = pData.path.map(item => `<div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 transition-all group"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div></div>`).join('');
 
         const ctx = document.getElementById('standingsChart').getContext('2d');

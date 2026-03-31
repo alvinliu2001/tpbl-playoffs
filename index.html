@@ -52,9 +52,9 @@
                     <h3 class="text-lg md:text-xl font-bold text-white flex items-center">
                         <span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>預測比賽結果
                     </h3>
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-3 text-shadow-none">
                         <span class="lg:hidden text-[10px] text-[#d8bf98]/50 font-bold uppercase tracking-widest animate-pulse">Swipe ↔</span>
-                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
+                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
                     </div>
                 </div>
                 <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden text-shadow">
+            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
                     <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
@@ -138,10 +138,7 @@
 
     let matchResults = {}, chartInstance = null, selectedPathTeam = '雲豹';
     const STORAGE_KEY = 'tpbl_sim_results_v4_31';
-
-    const baselineResults = {
-        'G97': 'teamA', 'G98': 'teamA', 'G99': 'teamA', 'G100': 'teamB', 'G101': 'teamA', 'G102': 'teamB'
-    };
+    const baselineResults = { 'G97': 'teamA', 'G98': 'teamA', 'G99': 'teamA', 'G100': 'teamB', 'G101': 'teamA', 'G102': 'teamB' };
 
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -212,9 +209,9 @@
             return 999;
         };
 
-        let minDays = runSim(currentStats, currentH2H, matchResults);
-        if (minDays === 0) return { days: 0, path: [] };
-        if (minDays >= 999) return { days: 'X', path: [] };
+        let minD = runSim(currentStats, currentH2H, matchResults);
+        if (minD === 0) return { days: 0, path: [] };
+        if (minD >= 999) return { days: 'X', path: [] };
 
         let path = [], s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
         let hasReached = false;
@@ -242,14 +239,7 @@
         Object.keys(stats).forEach(t => stats[t].maxWins = 36 - stats[t].lose);
         
         const teams = Object.keys(stats);
-        let top3 = [], top5 = [], elimList = [], info = {};
-
-        // 精確鎖定判定
-        function definitelyBeats(o, t, s, h) {
-            if (s[o].win > s[t].maxWins) return true;
-            if (s[o].win === s[t].maxWins && (h[o][t] || 0) >= 4) return true;
-            return false;
-        }
+        let top3 = [], top5 = [], info = {};
 
         teams.forEach(t => {
             let risk3 = 0, risk5 = 0;
@@ -263,16 +253,24 @@
             info[t] = getQuickestClinch(t, stats, h2h);
         });
 
-        // 淘汰判定修正：回歸「必然領先」邏輯
+        const sorted = sortRanking(stats, h2h);
+        
+        // 修正淘汰判定：如果即便在「個人最佳模擬」下，最終排名依然無法進入前 5，則判定淘汰
+        let elimList = [];
         teams.forEach(t => {
-            let defAbove = 0;
-            teams.forEach(o => { if (t !== o && definitelyBeats(o, t, stats, h2h)) defAbove++; });
-            if (defAbove >= 5) elimList.push(t);
+            let simS = JSON.parse(JSON.stringify(stats)), simH = JSON.parse(JSON.stringify(h2h)), simR = JSON.parse(JSON.stringify(matchResults));
+            for (let i = 0; i < matches.length; i++) {
+                const m = matches[i]; if (simR[m.id] !== null) continue;
+                let w = (m.teamA === t || m.teamB === t) ? t : (simS[m.teamA].lose > simS[m.teamB].lose ? m.teamA : m.teamB);
+                let l = (m.teamA === w) ? m.teamB : m.teamA;
+                simS[w].win++; simS[l].lose++; simH[w][l]++; simS[w].maxWins = 36-simS[w].lose; simS[l].maxWins = 36-simS[l].lose; simR[m.id] = 'sim';
+            }
+            if (sortRanking(simS, simH).indexOf(t) >= 5) elimList.push(t);
         });
 
-        const sorted = sortRanking(stats, h2h);
         document.getElementById('clinchedTop3').innerText = top3.length ? top3.join(', ') : '未有隊伍';
-        document.getElementById('clinchedTop5').innerText = top5.length ? top5.join(', ') : '未有隊伍';
+        // 修改：上方看板的挑戰賽名單排除已經進入季後賽的隊伍
+        document.getElementById('clinchedTop5').innerText = top5.filter(t => !top3.includes(t)).length ? top5.filter(t => !top3.includes(t)).join(', ') : '未有隊伍';
         document.getElementById('eliminated').innerText = elimList.length ? elimList.join(', ') : '未有隊伍';
 
         document.getElementById('standingsBody').innerHTML = sorted.map((t, i) => {

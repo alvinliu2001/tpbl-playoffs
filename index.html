@@ -20,7 +20,7 @@
         @media (max-width: 1023px) { .mobile-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; } .mobile-slider::-webkit-scrollbar { display: none; } .slide-item { flex: 0 0 100%; scroll-snap-align: center; padding: 0 4px; } }
     </style>
 </head>
-<body class="bg-[#19191a] text-slate-200 p-3 md:p-8 text-shadow-sm">
+<body class="bg-[#19191a] text-slate-200 p-3 md:p-8">
 
 <div class="max-w-7xl mx-auto">
     <header class="mb-8 md:mb-10 text-center">
@@ -54,7 +54,7 @@
                     </h3>
                     <div class="flex items-center space-x-3">
                         <span class="lg:hidden text-[10px] text-[#d8bf98]/50 font-bold uppercase tracking-widest animate-pulse">Swipe ↔</span>
-                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
+                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
                     </div>
                 </div>
                 <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
@@ -112,6 +112,7 @@
 </div>
 
 <script>
+    // 基準數據 (G97 開始前的真實戰績)
     const baseTeams = {
         '雲豹':   { win: 19, lose: 9,  color: '#116d4e', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/leopards.BGzlSG8M.webp' },
         '夢想家': { win: 17, lose: 11, color: '#8eb73d', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/dreamers.8uP5AliT.webp' },
@@ -137,8 +138,42 @@
     ];
 
     let matchResults = {}, chartInstance = null, selectedPathTeam = '雲豹';
+    const STORAGE_KEY = 'tpbl_sim_results_v3';
 
-    function init() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
+    // 初始化已賽結果 (3/31 真實戰況)
+    const baselineResults = {
+        'G97': 'teamA', // 夢想家勝海神
+        'G98': 'teamA', // 夢想家勝國王
+        'G99': 'teamA', // 攻城獅勝特攻
+        'G100': 'teamB', // 海神勝戰神
+        'G101': 'teamA', // 攻城獅勝雲豹
+        'G102': 'teamB'  // 國王勝戰神
+    };
+
+    function init() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            matchResults = JSON.parse(saved);
+        } else {
+            // 如果沒存檔，載入 3/31 的真實結果
+            matches.forEach(m => matchResults[m.id] = baselineResults[m.id] || null);
+        }
+        renderMatches();
+        calculateAndUpdate();
+    }
+
+    function saveToStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(matchResults));
+    }
+
+    function resetAll() {
+        // 重置回 3/31 當下戰況
+        matches.forEach(m => matchResults[m.id] = baselineResults[m.id] || null);
+        saveToStorage();
+        renderMatches();
+        calculateAndUpdate();
+    }
+
     function renderMatches() {
         const container = document.getElementById('matchList');
         container.innerHTML = matches.map(m => {
@@ -146,10 +181,10 @@
             return `<div class="slide-item"><div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center"><div class="flex items-center justify-between mb-4 px-1"><span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span></div><div class="flex space-x-2 items-center"><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamB')" style="${getTeamStyle(m.teamB, res === 'teamB')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamB}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div></div><div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamA')" style="${getTeamStyle(m.teamA, res === 'teamA')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamA}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div></div></div></div></div>`;
         }).join('');
     }
+
     function getTeamStyle(name, sel) { const t = baseTeams[name]; return sel ? `background-color: ${t.color}; color: ${t.textColor}; border-color: ${t.color};` : ""; }
     function selectPathTeam(name) { selectedPathTeam = name; calculateAndUpdate(); }
-    function setWinner(id, winner) { matchResults[id] = (matchResults[id] === winner) ? null : winner; renderMatches(); calculateAndUpdate(); }
-    function resetAll() { matches.forEach(m => matchResults[m.id] = null); renderMatches(); calculateAndUpdate(); }
+    function setWinner(id, winner) { matchResults[id] = (matchResults[id] === winner) ? null : winner; saveToStorage(); renderMatches(); calculateAndUpdate(); }
 
     function checkClinchStatus(targetTeam, stats, h2h) {
         let risk = 0;
@@ -158,47 +193,45 @@
     }
 
     function getQuickestClinch(targetTeam, currentStats, currentH2H) {
-        let s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
-        if (checkClinchStatus(targetTeam, s, h)) return { days: 0, path: [] };
-
         const runSim = (st, hh, res) => {
             let tempS = JSON.parse(JSON.stringify(st)), tempH = JSON.parse(JSON.stringify(hh));
-            let steps = 0;
+            if (checkClinchStatus(targetTeam, tempS, tempH)) return 0;
+            let count = 0;
             for (let i = 0; i < matches.length; i++) {
                 const m = matches[i]; if (res[m.id] !== null) continue;
-                steps++;
+                count++;
                 let w;
                 if (m.teamA === targetTeam || m.teamB === targetTeam) { w = targetTeam; } 
                 else {
                     let sA = JSON.parse(JSON.stringify(tempS)), sB = JSON.parse(JSON.stringify(tempS));
                     sA[m.teamA].win++; sA[m.teamB].lose++; sA[m.teamA].maxWins = 36-sA[m.teamA].lose; sA[m.teamB].maxWins = 36-sA[m.teamB].lose;
                     sB[m.teamB].win++; sB[m.teamA].lose++; sB[m.teamB].maxWins = 36-sB[m.teamB].lose; sB[m.teamA].maxWins = 36-sB[m.teamA].lose;
-                    const getT = (stats) => Object.keys(stats).filter(t=>t!==targetTeam).sort((a,b)=>stats[b].maxWins - stats[a].maxWins)[2];
+                    const getT = (stts) => Object.keys(stts).filter(t=>t!==targetTeam).sort((a,b)=>stts[b].maxWins - stts[a].maxWins)[2];
                     w = (sA[getT(sA)].maxWins < sB[getT(sB)].maxWins) ? m.teamA : m.teamB;
                 }
                 let l = (m.teamA === w) ? m.teamB : m.teamA;
-                tempS[w].win++; tempS[l].lose++; tempH[w][l]++;
-                tempS[w].maxWins = 36-tempS[w].lose; tempS[l].maxWins = 36-tempS[l].lose;
-                if (checkClinchStatus(targetTeam, tempS, tempH)) return steps;
+                tempS[w].win++; tempS[l].lose++; tempH[w][l]++; tempS[w].maxWins = 36-tempS[w].lose; tempS[l].maxWins = 36-tempS[l].lose;
+                if (checkClinchStatus(targetTeam, tempS, tempH)) return count;
             }
             return 999;
         };
 
-        let path = [];
-        let hasReached = false;
+        let s = JSON.parse(JSON.stringify(currentStats)), h = JSON.parse(JSON.stringify(currentH2H)), r = JSON.parse(JSON.stringify(matchResults));
+        if (checkClinchStatus(targetTeam, s, h)) return { days: 0, path: [] };
+
+        let path = [], hasReached = false;
         for (let i = 0; i < matches.length; i++) {
             const m = matches[i]; if (r[m.id] !== null) continue;
             let winT, losT;
             if (m.teamA === targetTeam || m.teamB === targetTeam) { winT = targetTeam; } 
             else {
-                let rA = JSON.parse(JSON.stringify(r)), rB = JSON.parse(JSON.stringify(r));
-                rA[m.id] = 'teamA'; rB[m.id] = 'teamB';
+                let rA = JSON.parse(JSON.stringify(r)); rA[m.id] = 'teamA';
+                let rB = JSON.parse(JSON.stringify(r)); rB[m.id] = 'teamB';
                 winT = (runSim(s, h, rA) <= runSim(s, h, rB)) ? m.teamA : m.teamB;
             }
             losT = (m.teamA === winT) ? m.teamB : m.teamA;
-            let txt = (winT === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}`;
-            path.push({ id: m.id, date: m.date, detail: txt });
-            s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = 'simulated';
+            path.push({ id: m.id, date: m.date, detail: (winT === targetTeam) ? `<span class="text-[#d8bf98] font-bold">${targetTeam}</span> 獲勝` : `${losT} 輸給 ${winT}` });
+            s[winT].win++; s[losT].lose++; h[winT][losT]++; s[winT].maxWins = 36-s[winT].lose; s[losT].maxWins = 36-s[losT].lose; r[m.id] = 'sim';
             if (checkClinchStatus(targetTeam, s, h)) { hasReached = true; break; }
         }
         return hasReached ? { days: path.length, path: path } : { days: 'X', path: [] };
@@ -219,7 +252,15 @@
         document.getElementById('clinchedTop3').innerText = top3.length ? top3.join(', ') : '未有隊伍';
         document.getElementById('clinchedTop5').innerText = top5.length ? top5.join(', ') : '未有隊伍';
         document.getElementById('eliminated').innerText = elim.length ? elim.join(', ') : '未有隊伍';
-        const sorted = teams.sort((a, b) => { const sA = stats[a], sB = stats[b]; const pctA = sA.win/(sA.win+sA.lose||1), pctB = sB.win/(sB.win+sB.lose||1); if (Math.abs(pctA-pctB)>0.0001) return pctB-pctA; return (h2h[b][a]||0)-(h2h[a][b]||0); });
+        
+        const sorted = teams.sort((a, b) => { 
+            const sA = stats[a], sB = stats[b]; 
+            const pctA = sA.win/(sA.win+sA.lose||1), pctB = sB.win/(sB.win+sB.lose||1); 
+            if (Math.abs(pctA-pctB)>0.0001) return pctB-pctA; 
+            const tied = teams.filter(t => Math.abs(stats[t].win/(stats[t].win+stats[t].lose||1) - pctA) < 0.0001);
+            if (tied.length > 2) { const getGW = (tm) => tied.reduce((sum, o) => (tm===o) ? sum : sum + (h2h[tm][o]||0), 0); if (getGW(a) !== getGW(b)) return getGW(b) - getGW(a); }
+            return (h2h[b][a]||0)-(h2h[a][b]||0); 
+        });
         
         document.getElementById('standingsBody').innerHTML = sorted.map((t, i) => {
             let s = '<span class="text-white/5">-</span>';

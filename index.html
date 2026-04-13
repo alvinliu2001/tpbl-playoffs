@@ -29,7 +29,7 @@
         </h1>
         <p class="text-slate-500 font-medium tracking-widest text-xs md:sm uppercase">TPBL Playoff Predictor</p>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mt-8 text-shadow-none">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mt-8">
             <div class="p-4 md:p-5 rounded-2xl bg-[#242426] border border-white/5 shadow-xl text-center">
                 <span class="text-emerald-500/80 text-[10px] md:text-xs font-bold block mb-2 uppercase tracking-tighter">🏆 確定進入季後賽</span>
                 <div id="clinchedTop3" class="text-lg md:text-xl font-black text-emerald-400 drop-shadow-md">未有隊伍</div>
@@ -54,7 +54,7 @@
                     </h3>
                     <div class="flex items-center space-x-3">
                         <span class="lg:hidden text-[10px] text-[#d8bf98]/50 font-bold uppercase tracking-widest animate-pulse">Swipe ↔</span>
-                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
+                        <button onclick="resetAll()" class="text-[10px] font-bold bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1.5 rounded-full transition border border-white/10 uppercase tracking-wider">Reset</button>
                     </div>
                 </div>
                 <div id="matchList" class="mobile-slider lg:flex-col lg:overflow-y-auto custom-scrollbar flex-1 lg:space-y-3 pb-2 md:pb-0"></div>
@@ -70,21 +70,21 @@
                     <table class="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr class="text-slate-500 text-[9px] md:text-[11px] uppercase tracking-widest border-b border-white/5">
-                                <th class="pb-4 pl-4 w-[12%] text-shadow-none">名次</th>
-                                <th class="pb-4 w-[25%] text-shadow-none">隊伍</th>
-                                <th class="pb-4 text-center w-[18%] relative group cursor-help text-shadow-none">
+                                <th class="pb-4 pl-4 w-[12%]">名次</th>
+                                <th class="pb-4 w-[25%]">隊伍</th>
+                                <th class="pb-4 text-center w-[18%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">現時戰績</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none">包含目前已點選的預測賽果。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none font-bold">包含目前已點選的預測賽果。</div>
                                 </th>
-                                <th class="pb-4 text-center text-[#d8bf98] w-[15%] relative group cursor-help text-shadow-none">
+                                <th class="pb-4 text-center text-[#d8bf98] w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-[#d8bf98]/50 font-bold">最高勝場</span>
-                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none">若剩餘全勝，本季最終能達到的最高總勝場。</div>
+                                    <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-shadow-none font-bold">若剩餘全勝，本季最終能達到的最高總勝場。</div>
                                 </th>
-                                <th class="pb-4 text-center w-[15%] relative group cursor-help text-shadow-none">
+                                <th class="pb-4 text-center w-[15%] relative group cursor-help">
                                     <span class="border-b border-dotted border-slate-600 font-bold">晉級場數</span>
                                     <div class="tooltip-content absolute z-20 invisible group-hover:visible opacity-0 -translate-y-1 w-32 md:w-40 p-2 mt-2 text-[10px] leading-relaxed text-slate-200 bg-[#1d1d1f] border border-[#d8bf98]/30 rounded-lg shadow-2xl left-1/2 -translate-x-1/2 normal-case font-medium tracking-normal text-center text-shadow-none font-bold">在理想劇本下，預計還需幾場聯賽即可鎖定前三。</div>
                                 </th>
-                                <th class="pb-4 text-right pr-4 w-[17%] text-shadow-none">狀態</th>
+                                <th class="pb-4 text-right pr-4 w-[17%]">狀態</th>
                             </tr>
                         </thead>
                         <tbody id="standingsBody"></tbody>
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden text-shadow-none">
+            <div id="pathAnalysisSection" class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 hidden">
                 <h3 class="text-lg md:text-xl font-bold mb-5 text-white flex items-center justify-between">
                     <div class="flex items-center"><span class="w-1 h-5 bg-[#d8bf98] mr-3 rounded-full"></span>最短晉級路徑分析</div>
                     <div id="pathTeamName" class="text-[10px] md:text-sm font-bold text-[#d8bf98] bg-[#d8bf98]/10 px-3 py-1 rounded-full border border-[#d8bf98]/20 tracking-wide"></div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-center text-shadow-none">
+            <div class="bg-[#242426] p-4 md:p-6 rounded-2xl shadow-sm border border-white/5 text-center text-shadow-none font-bold">
                 <h3 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest text-center">各隊勝場區間視覺化</h3>
                 <div class="h-[280px] md:h-[320px]"><canvas id="standingsChart"></canvas></div>
             </div>
@@ -112,30 +112,29 @@
 </div>
 
 <script>
-    // 同步至 4/11 最新戰績
+    // 同步至 4/12 賽後基準數據
     const baseTeams = {
         '雲豹':   { win: 21, lose: 11, color: '#116d4e', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/leopards.BGzlSG8M.webp' },
-        '夢想家': { win: 19, lose: 12, color: '#8eb73d', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/dreamers.8uP5AliT.webp' },
-        '攻城獅': { win: 18, lose: 12, color: '#52308c', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/lioneers.DTfkuEJZ.webp' },
+        '夢想家': { win: 20, lose: 12, color: '#8eb73d', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/dreamers.8uP5AliT.webp' },
+        '攻城獅': { win: 18, lose: 13, color: '#52308c', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/lioneers.DTfkuEJZ.webp' },
         '國王':   { win: 17, lose: 15, color: '#ffe91a', textColor: '#000000', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/kings.DsunMN-K.webp' },
         '特攻':   { win: 16, lose: 16, color: '#f6d233', textColor: '#182648', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/dea.BEfNfG39.webp' },
-        '戰神':   { win: 10, lose: 21, color: '#e20202', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/mars.BbDWfkG6.webp' },
-        '海神':   { win: 9,  lose: 23, color: '#0766e3', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/aquas.CB-Rq9NB.webp' }
+        '戰神':   { win: 11, lose: 21, color: '#e20202', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/mars.BbDWfkG6.webp' },
+        '海神':   { win: 9,  lose: 24, color: '#0766e3', textColor: '#ffffff', logo: 'https://assets.tpbl.basketball/frontend/_nuxt/aquas.CB-Rq9NB.webp' }
     };
 
     const initialH2H = {
         '雲豹': { '夢想家': 3, '攻城獅': 2, '國王': 3, '特攻': 4, '戰神': 5, '海神': 4 },
-        '夢想家': { '雲豹': 2, '攻城獅': 2, '國王': 2, '特攻': 3, '戰神': 5, '海神': 5 },
-        '攻城獅': { '雲豹': 4, '夢想家': 2, '國王': 3, '特攻': 4, '戰神': 1, '海神': 4 },
+        '夢想家': { '雲豹': 2, '攻城獅': 3, '國王': 2, '特攻': 3, '戰神': 5, '海神': 5 },
+        '攻城獅': { '雲豹': 4, '夢想家': 2, '國王': 3, '特攻': 4, '戰神': 3, '海神': 4 },
         '國王': { '雲豹': 2, '夢想家': 3, '攻城獅': 2, '特攻': 1, '戰神': 4, '海神': 5 },
         '特攻': { '雲豹': 1, '夢想家': 3, '攻城獅': 2, '國王': 4, '戰神': 3, '海神': 3 },
-        '戰神': { '雲豹': 1, '夢想家': 0, '攻城獅': 3, '國王': 2, '特攻': 2, '海神': 2 },
+        '戰神': { '雲豹': 1, '夢想家': 0, '攻城獅': 1, '國王': 2, '特攻': 2, '海神': 3 },
         '海神': { '雲豹': 1, '夢想家': 1, '攻城獅': 1, '國王': 1, '特攻': 2, '戰神': 3 }
     };
 
-    // 剩餘賽程 (從 4/12 開始)
+    // 剩餘賽程 (從 4/18 開始)
     const matches = [
-        { id: 'G111', date: '4/12', teamA: '海神', teamB: '戰神' }, { id: 'G112', date: '4/12', teamA: '攻城獅', teamB: '夢想家' },
         { id: 'G113', date: '4/18', teamA: '夢想家', teamB: '戰神' }, { id: 'G114', date: '4/18', teamA: '特攻', teamB: '雲豹' },
         { id: 'G115', date: '4/19', teamA: '夢想家', teamB: '攻城獅' }, { id: 'G116', date: '4/19', teamA: '特攻', teamB: '海神' },
         { id: 'G117', date: '4/24', teamA: '國王', teamB: '夢想家' }, { id: 'G118', date: '4/25', teamA: '雲豹', teamB: '海神' },
@@ -146,7 +145,7 @@
     ];
 
     let matchResults = {}, chartInstance = null, selectedPathTeam = '雲豹';
-    const STORAGE_KEY = 'tpbl_sim_v5_0411';
+    const STORAGE_KEY = 'tpbl_sim_final_0412';
 
     function init() {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -165,7 +164,7 @@
         const container = document.getElementById('matchList');
         container.innerHTML = matches.map(m => {
             const res = matchResults[m.id];
-            return `<div class="slide-item"><div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center"><div class="flex items-center justify-between mb-4 px-1"><span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span></div><div class="flex space-x-2 items-center"><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamB')" style="${getTeamStyle(m.teamB, res === 'teamB')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamB}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div></div><div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamA')" style="${getTeamStyle(m.teamA, res === 'teamA')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamA}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div></div></div></div></div>`;
+            return `<div class="slide-item"><div class="p-4 rounded-xl bg-[#1d1d1f] border border-white/5 shadow-sm h-full flex flex-col justify-center text-shadow-none"><div class="flex items-center justify-between mb-4 px-1"><span class="text-[10px] font-bold text-slate-200 bg-white/10 px-2 py-0.5 rounded tracking-widest">${m.id} | ${m.date}</span><span class="text-[9px] text-slate-500 uppercase font-black tracking-tighter">Select Result</span></div><div class="flex space-x-2 items-center"><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamB')" style="${getTeamStyle(m.teamB, res === 'teamB')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamB' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamB}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Away</div></div><div class="text-white/10 font-black text-[9px] italic uppercase px-1">vs</div><div class="flex-1"><button onclick="setWinner('${m.id}', 'teamA')" style="${getTeamStyle(m.teamA, res === 'teamA')}" class="w-full py-3 px-2 text-[13px] md:text-sm rounded-lg border transition-all font-bold text-center truncate ${res === 'teamA' ? 'shadow-[0_0_15px_rgba(0,0,0,0.3)]' : 'bg-[#242426] text-slate-300 border-white/5 hover:border-white/10'}">${m.teamA}</button><div class="text-[8px] text-center text-slate-600 mt-1 font-black uppercase tracking-widest">Home</div></div></div></div></div>`;
         }).join('');
     }
 
@@ -180,10 +179,7 @@
             const pctA = sA.win / (sA.win + sA.lose || 1), pctB = sB.win / (sB.win + sB.lose || 1);
             if (Math.abs(pctA - pctB) > 0.0001) return pctB - pctA;
             const tied = list.filter(t => Math.abs(stats[t].win / (stats[t].win + stats[t].lose || 1) - pctA) < 0.0001);
-            if (tied.length > 2) {
-                const getGW = (tm) => tied.reduce((sum, o) => (tm === o) ? sum : sum + (h2h[tm][o] || 0), 0);
-                if (getGW(a) !== getGW(b)) return getGW(b) - getGW(a);
-            }
+            if (tied.length > 2) { const getGW = (tm) => tied.reduce((sum, o) => (tm === o) ? sum : sum + (h2h[tm][o] || 0), 0); if (getGW(a) !== getGW(b)) return getGW(b) - getGW(a); }
             return (h2h[b][a] || 0) - (h2h[a][b] || 0);
         });
     }
@@ -255,9 +251,9 @@
         }).join('');
         const pData = info[selectedPathTeam], list = document.getElementById('pathList');
         document.getElementById('pathAnalysisSection').classList.remove('hidden'); document.getElementById('pathTeamName').innerText = `${selectedPathTeam} 最短晉級路徑`;
-        if (pData.days === 0) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`;
-        else if (pData.days === 'X') list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
-        else list.innerHTML = pData.path.map(item => `<div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 transition-all group"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div></div>`).join('');
+        if (pData.days === 0) list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5 text-shadow-none"><div class="text-[#d8bf98] font-bold text-sm">已達成晉級條件</div></div>`;
+        else if (pData.days === 'X') list.innerHTML = `<div class="col-span-full py-8 text-center bg-white/5 rounded-2xl border border-white/5 text-shadow-none"><div class="text-slate-400 font-bold text-sm">無直接晉級路徑</div></div>`;
+        else list.innerHTML = pData.path.map(item => `<div class="flex items-center p-3 bg-white/5 rounded-xl border border-white/5 transition-all group text-shadow-none"><div class="mr-3 text-[9px] font-mono text-slate-500 leading-tight">${item.date}<br/><span class="text-slate-400 font-bold">${item.id}</span></div><div class="text-slate-200 font-medium text-[11px] md:text-xs">${item.detail}</div></div>`).join('');
         const ctx = document.getElementById('standingsChart').getContext('2d');
         if (chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, { type: 'bar', data: { labels: sorted, datasets: [{ label: '目前勝場', data: sorted.map(t => stats[t].win), backgroundColor: sorted.map(t => baseTeams[t].color), borderRadius: 6 }, { label: '潛在勝場', data: sorted.map(t => stats[t].maxWins - stats[t].win), backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 6 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, max: 36, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#475569', font: { size: 9 } } }, y: { stacked: true, grid: { display: false }, ticks: { color: '#cbd5e1', font: { weight: 'bold', size: 11 } } } }, plugins: { legend: { display: false } } } });
